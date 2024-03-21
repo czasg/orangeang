@@ -1,0 +1,23 @@
+.image-bg {
+    background-color: white;
+}
+
+.image {
+    position: relative;
+    cursor: zoom-in;
+    transition: transform .3s cubic-bezier(.2, 0, .2, 1) !important;
+}
+
+.fullscreen {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--image-bg-color);
+    object-fit: contain;
+    z-index: 9998;
+    opacity: 0.9;
+    overflow: hidden;
+}
+
