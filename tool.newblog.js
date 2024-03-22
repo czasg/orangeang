@@ -7,7 +7,7 @@ function newBlogTmpl({title}) {
 ---
 title: ${title}
 authors: [czasg]
-tags: [未定义]
+tags: [撰写中,待分类]
 ---
 
 摘要在此处
