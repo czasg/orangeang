@@ -4,10 +4,46 @@
         <title>橙子昂的小站 Blog</title>
         <link>https://your-docusaurus-site.example.com/orange-ang/blog</link>
         <description>橙子昂的小站 Blog</description>
-        <lastBuildDate>Thu, 26 Aug 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 22 Mar 2024 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>zh-Hans</language>
+        <item>
+            <title><![CDATA[docusaurus 搭建 github 站点教程]]></title>
+            <link>https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages</link>
+            <guid>https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages</guid>
+            <pubDate>Fri, 22 Mar 2024 00:00:00 GMT</pubDate>
+            <description><![CDATA[本文记录如何基于 docusaurus 从0到1搭建 github 免费个人站点，并通过 github-actions 实现自动部署。]]></description>
+            <content:encoded><![CDATA[<p>本文记录如何基于 docusaurus 从0到1搭建 github 免费个人站点，并通过 github-actions 实现自动部署。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="初始化仓库">初始化仓库<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%93%E5%BA%93" class="hash-link" aria-label="初始化仓库的直接链接" title="初始化仓库的直接链接">​</a></h2>
+<p>进入<a href="https://github.com/new" target="_blank" rel="noopener noreferrer">github仓库创建页面</a>，我们创建一个全新的空白仓库，项目名命名为 <code>myblog</code>。</p>
+<p>接着，我们新建 gh-pages 分支，并修改 pages 配置，将部署信息指向我们新建的 gh-pages 分支。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="创建-codespaces">创建 codespaces<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E5%88%9B%E5%BB%BA-codespaces" class="hash-link" aria-label="创建 codespaces的直接链接" title="创建 codespaces的直接链接">​</a></h2>
+<p>codespaces 是浏览器版的 vscode，方便我们在线进行服务搭建。</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="初始化-docusaurus-项目">初始化 docusaurus 项目<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E5%88%9D%E5%A7%8B%E5%8C%96-docusaurus-%E9%A1%B9%E7%9B%AE" class="hash-link" aria-label="初始化 docusaurus 项目的直接链接" title="初始化 docusaurus 项目的直接链接">​</a></h2>
+<p>在这里，我们直接使用 codespaces 进行项目初始化。codespaces 是浏览器版的 vscode，方便我们在线进行服务搭建。</p>
+<p>执行命令行：</p>
+<ul>
+<li><code>npx create-docusaurus@latest myblog classic</code>：初始化一个 myblog 的 docusaurus 项目</li>
+<li><code>mv ./myblog/* ./myblog/.gitignore .</code>：将 myblog 目录下的所有文件移动到当前目录</li>
+<li><code>rm -rf myblog</code></li>
+</ul>
+<p>修改 <code>docusaurus.config.js</code> 文件</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="配置部署公钥与密钥">配置部署公钥与密钥<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E9%85%8D%E7%BD%AE%E9%83%A8%E7%BD%B2%E5%85%AC%E9%92%A5%E4%B8%8E%E5%AF%86%E9%92%A5" class="hash-link" aria-label="配置部署公钥与密钥的直接链接" title="配置部署公钥与密钥的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="适配-workflow-文件">适配 workflow 文件<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E9%80%82%E9%85%8D-workflow-%E6%96%87%E4%BB%B6" class="hash-link" aria-label="适配 workflow 文件的直接链接" title="适配 workflow 文件的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="提交代码">提交代码<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E6%8F%90%E4%BA%A4%E4%BB%A3%E7%A0%81" class="hash-link" aria-label="提交代码的直接链接" title="提交代码的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="配置-gh-pages">配置 gh-pages<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E9%85%8D%E7%BD%AE-gh-pages" class="hash-link" aria-label="配置 gh-pages的直接链接" title="配置 gh-pages的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="初始化-action-环境">初始化 action 环境<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E5%88%9D%E5%A7%8B%E5%8C%96-action-%E7%8E%AF%E5%A2%83" class="hash-link" aria-label="初始化 action 环境的直接链接" title="初始化 action 环境的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="新建-docusaurus-项目">新建 docusaurus 项目<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E6%96%B0%E5%BB%BA-docusaurus-%E9%A1%B9%E7%9B%AE" class="hash-link" aria-label="新建 docusaurus 项目的直接链接" title="新建 docusaurus 项目的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="初始化">初始化<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E5%88%9D%E5%A7%8B%E5%8C%96" class="hash-link" aria-label="初始化的直接链接" title="初始化的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="搭建-github-actions">搭建 Github Actions<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E6%90%AD%E5%BB%BA-github-actions" class="hash-link" aria-label="搭建 Github Actions的直接链接" title="搭建 Github Actions的直接链接">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="更新仓库尝试自动部署">更新仓库，尝试自动部署<a href="https://your-docusaurus-site.example.com/orange-ang/blog/tutorial-docusaurus-deploy-github-pages#%E6%9B%B4%E6%96%B0%E4%BB%93%E5%BA%93%E5%B0%9D%E8%AF%95%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2" class="hash-link" aria-label="更新仓库，尝试自动部署的直接链接" title="更新仓库，尝试自动部署的直接链接">​</a></h2>
+<br>
+<div class="theme-admonition theme-admonition-info admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span>👇👇👇</div><div class="admonitionContent_BuS1"><p><strong>本文作者:</strong> 橙子昂
+<strong>版权声明:</strong> 转载请注明出处哦~👮‍</p></div></div>]]></content:encoded>
+            <category>撰写中</category>
+            <category>教程</category>
+        </item>
         <item>
             <title><![CDATA[Welcome]]></title>
             <link>https://your-docusaurus-site.example.com/orange-ang/blog/welcome</link>
