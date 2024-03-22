@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkorange_ang=self.webpackChunkorange_ang||[]).push([[728],{5823:a=>{a.exports=JSON.parse('{"label":"docusaurus","permalink":"/orange-ang/blog/tags/docusaurus","allTagsPath":"/orange-ang/blog/tags","count":4,"unlisted":false}')}}]);
