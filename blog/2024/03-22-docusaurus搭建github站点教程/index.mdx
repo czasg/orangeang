@@ -1,0 +1,60 @@
+---
+title: docusaurus 搭建 github 站点教程
+authors: [czasg]
+tags: [撰写中,教程]
+slug: tutorial-docusaurus-deploy-github-pages
+---
+
+import AutoImage from '@site/src/components/FullScreenImage';
+
+<!--package-->
+
+本文记录如何基于 docusaurus 从0到1搭建 github 免费个人站点，并通过 github-actions 实现自动部署。
+
+<!--truncate-->
+
+## 初始化仓库
+进入[github仓库创建页面](https://github.com/new)，我们创建一个全新的空白仓库，项目名命名为 `myblog`。
+
+接着，我们新建 gh-pages 分支，并修改 pages 配置，将部署信息指向我们新建的 gh-pages 分支。
+
+## 创建 codespaces
+codespaces 是浏览器版的 vscode，方便我们在线进行服务搭建。
+
+
+## 初始化 docusaurus 项目
+在这里，我们直接使用 codespaces 进行项目初始化。codespaces 是浏览器版的 vscode，方便我们在线进行服务搭建。
+
+执行命令行：
+- `npx create-docusaurus@latest myblog classic`：初始化一个 myblog 的 docusaurus 项目
+- `mv ./myblog/* ./myblog/.gitignore .`：将 myblog 目录下的所有文件移动到当前目录
+- `rm -rf myblog`
+
+修改 `docusaurus.config.js` 文件
+
+
+## 配置部署公钥与密钥
+
+
+## 适配 workflow 文件
+
+
+## 提交代码
+
+
+
+
+## 配置 gh-pages
+## 初始化 action 环境
+## 新建 docusaurus 项目
+## 初始化
+## 搭建 Github Actions
+## 更新仓库，尝试自动部署
+
+
+<br/>
+
+:::info 👇👇👇
+**本文作者:** 橙子昂
+**版权声明:** 转载请注明出处哦~👮‍
+:::

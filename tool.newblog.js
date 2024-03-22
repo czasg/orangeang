@@ -8,7 +8,12 @@ function newBlogTmpl({title}) {
 title: ${title}
 authors: [czasg]
 tags: [撰写中,待分类]
+slug: ${title}
 ---
+
+import AutoImage from '@site/src/components/FullScreenImage';
+
+<!--package-->
 
 摘要在此处
 
@@ -16,11 +21,10 @@ tags: [撰写中,待分类]
 
 正文在此处
 
-
 <br/>
 
 :::info 👇👇👇
-**本文作者:** Czasg    
+**本文作者:** 橙子昂    
 **版权声明:** 转载请注明出处哦~👮‍
 :::
 `.trim()
@@ -48,7 +52,7 @@ rl.question('请输入博客名: ', (blogName) => {
         }
 
         // 创建 index.md 文件
-        const indexPath = path.join(blogPath, 'index.md');
+        const indexPath = path.join(blogPath, 'index.mdx');
         fs.writeFile(indexPath, newBlogTmpl({title: blogName}), (err) => {
             if (err) {
                 console.error('创建文件失败:', err);
