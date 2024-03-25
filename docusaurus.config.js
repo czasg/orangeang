@@ -11,17 +11,12 @@ const config = {
   title: '橙子昂的小站',
   tagline: '👋👋👋',
   favicon: 'img/dd.ico',
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://czasg.github.io',
   baseUrl: '/orange-ang/',
-  organizationName: 'czasg', // Usually your GitHub org/user name.
-  projectName: 'orange-ang', // Usually your repo name.
-
+  organizationName: 'czasg',
+  projectName: 'orange-ang',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh-Hans',
     locales: ['zh-Hans'],
@@ -29,22 +24,16 @@ const config = {
 
   presets: [
     [
-      'classic',
+      '@docusaurus/preset-classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: {
-          sidebarPath: './sidebars.js',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
+        docs: false,
         blog: {
+          blogSidebarTitle: '全部博文',
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          blogSidebarCount: 'ALL',  // [ALL, number]
+          postsPerPage: 10,
+          editUrl:'https://github.com/czasg/orange-ang/edit/main',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -53,27 +42,45 @@ const config = {
     ],
   ],
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'git',
+        path: 'docs/git',
+        routeBasePath: '/docs/git',
+        sidebarPath: require.resolve('./sidebars.js'),
+        editUrl: 'https://github.com/czasg/orange-ang/edit/main',
+        breadcrumbs: true, // 面包屑导航
+      }
+    ],
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/dd.ico',
+      colorMode: {
+        defaultMode: 'light',
+        disableSwitch: false,
+        respectPrefersColorScheme: false,
+      },
       navbar: {
-        title: 'My Site',
+        title: '橙子昂',
         logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          alt: 'Czasg',
+          src: 'img/dd.ico',
         },
+        hideOnScroll: true, // 滚动页面时自动隐藏导航栏
         items: [
+          {to: '/blog', label: '博客', position: 'left'},
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Tutorial',
+            label: "Git教程",
+            to: '/docs/git',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/czasg',
             label: 'GitHub',
             position: 'right',
           },
