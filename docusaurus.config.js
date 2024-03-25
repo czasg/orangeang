@@ -90,49 +90,74 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
+            title: 'Py开源项目',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'Pywss',
+                href: 'https://github.com/czasg/pywss',
+              },
+              {
+                label: 'Loggus',
+                href: 'https://github.com/czasg/loggus',
               },
             ],
           },
           {
-            title: 'Community',
+            title: 'Go开源项目',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Go Queue',
+                href: 'https://github.com/czasg/go-queue',
               },
               {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                label: 'Go Env',
+                href: 'https://github.com/czasg/go-env',
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                label: 'Go Set',
+                href: 'https://github.com/czasg/go-set',
+              },
+              {
+                label: 'Gonal',
+                href: 'https://github.com/czasg/gonal',
+              },
+              {
+                label: 'Snow',
+                href: 'https://github.com/czasg/snow',
               },
             ],
           },
           {
-            title: 'More',
+            title: '活跃社区',
             items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/czasg',
+              },
+              {
+                label: 'V2EX',
+                href: 'https://www.v2ex.com',
+              },
+              {
+                label: 'Stack Overflow',
+                href: 'https://stackoverflow.com',
+              },
+            ],
+          },
+          {
+            title: '官方文档',
+            items: [
+              {
+                label: 'Py标准库',
+                href: 'https://docs.python.org/zh-cn/3/library/index.html',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Czasg's Site.`,
       },
       prism: {
-        theme: prismThemes.github,
+        theme: prismThemes.vsDark,
         darkTheme: prismThemes.dracula,
       },
     }),
