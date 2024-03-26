@@ -15,7 +15,7 @@ const config = {
   baseUrl: '/orange-ang/',
   organizationName: 'czasg',
   projectName: 'orange-ang',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn', // 'ignore' | 'log' | 'warn' | 'throw'
   onBrokenMarkdownLinks: 'warn',
   i18n: {
     defaultLocale: 'zh-Hans',
@@ -150,6 +150,10 @@ const config = {
               {
                 label: 'Py标准库',
                 href: 'https://docs.python.org/zh-cn/3/library/index.html',
+              },
+              {
+                label: 'Docusaurus',
+                href: 'https://www.docusaurus.io/zh-CN/',
               },
             ],
           },
