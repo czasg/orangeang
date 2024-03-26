@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkorange_ang=self.webpackChunkorange_ang||[]).push([[2896],{9937:e=>{e.exports=JSON.parse('{"permalink":"/orange-ang/blog/tags/hello","page":1,"postsPerPage":10,"totalPages":1,"totalCount":2,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
