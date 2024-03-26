@@ -11,7 +11,7 @@ tags: [撰写中,待分类]
 slug: ${title}
 ---
 
-import AutoImage from '@site/src/components/FullScreenImage';
+import FullScreenImage from '@site/src/components/FullScreenImage';
 
 <!--package-->
 

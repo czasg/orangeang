@@ -1,5 +1,5 @@
 import React, {useState, useRef} from 'react';
-import './styles.module.css';
+import styles from './styles.module.css';
 
 const FullScreenImage = ({src}) => {
     const imageRef = useRef(null);
@@ -27,14 +27,14 @@ const FullScreenImage = ({src}) => {
 
     return (<>
         <div
-            className={isFullScreen ? 'image-bg fullscreen' : 'image-bg'}
+            className={isFullScreen ? `${styles.imageBg} ${styles.fullscreen}` : `${styles.imageBg}`}
             onWheel={handleMouseWheel}
             onClick={toggleFullScreen}
         >
         </div>
         <img
             src={src}
-            className={`image`}
+            className={styles.image}
             style={
                 isFullScreen ? {transform: calculateTransform(), cursor: 'zoom-out', zIndex: '9999'} : {}
             }
