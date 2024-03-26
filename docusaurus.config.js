@@ -54,6 +54,17 @@ const config = {
         breadcrumbs: true, // 面包屑导航
       }
     ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'golang',
+        path: 'docs/golang',
+        routeBasePath: '/docs/golang',
+        sidebarPath: require.resolve('./sidebars.js'),
+        editUrl: 'https://github.com/czasg/orange-ang/edit/main',
+        breadcrumbs: true, // 面包屑导航
+      }
+    ],
   ],
 
   themeConfig:
@@ -78,6 +89,10 @@ const config = {
           {
             label: "Git教程",
             to: '/docs/git',
+          },
+          {
+            label: "Golang教程",
+            to: '/docs/golang',
           },
           {
             href: 'https://github.com/czasg',
