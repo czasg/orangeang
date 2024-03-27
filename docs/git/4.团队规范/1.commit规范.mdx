@@ -38,12 +38,11 @@ import FullScreenImage from '@site/src/components/FullScreenImage';
 
 其中使用最多的应该就是 `type+subject` 的组合了。
 
-```text
-- feat: 新增了xx功能
+```text title="常见commit提交"
+feat: 新增了xx功能
 
-- fix: 修复了xx缺陷
-
-- style: 调整了xx命名
+1.新增xx功能
+2.删除xx功能
 ```
 
 对于大多数场景来说，这套规范是够用了的。
@@ -52,7 +51,7 @@ import FullScreenImage from '@site/src/components/FullScreenImage';
 
 ### 结构化规范模板
 
-首先我们重新梳理下，commit message 有哪些作用，什么人会关注它。
+首先在介绍前，我们重新梳理下，commit message 到底有哪些作用，什么人会关注它。
 
 基于上面提到了内容，我们可以总结出，commit message 无外乎有两种作用：
 
@@ -99,9 +98,9 @@ feat: 新增了xx功能
 1.在xx模块下新增了xx接口
 2.在xx模块下新增了xx功能
 
-1.项目需求：http://wiki
-2.研发需求：http://jira
-3.测试用例：http://zentao
+wiki: http://wiki
+jira: http://jira
+zentao: http://zentao
 ```
 
 ```text title="结构化规范模板"
