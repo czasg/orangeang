@@ -42,27 +42,38 @@ git 作为最先进的分布式版本控制系统，常用于源代码及其版�
 
 ### 场景一
 
-:::info 场景一/用户A/单分支直接提交
+:::info 场景一/团队成员A/服务端研发
 
 需求：
-1. 要求搭建一个后端服务，服务暴露 8080 端口，并提供 /readiness、/liveness 两个接口。
+1. 请搭建一个后端服务，要求服务暴露 8080 端口，并提供 /readiness、/liveness 两个接口。
 
 需求分析：
 1. 新增 server.py 文件，基于 pywss 搭建后端服务。
 2. 新建 feat-server 分支推送代码。
+3. 分支合并。
 
 :::
 
-可能有同学会问为什么需要新建分支，我的回答就是：<HighLightText>禁止直接推送主干分支！</HighLightText>
+可能有同学会问为什么需要新建分支，我的回答就是：<HighLightText>非个人仓库，禁止直接推送主干分支！</HighLightText>
 
-```bash
+```python showLineNumbers
+# 模拟用户A办公环境
 >>> mkdir -p /workspace/git/user-a && cd /workspace/git/user-a
 
+# 拉取仓库代码
 >>> git clone https://xxx.git
 
+# 进入代码目录
 >>> cd xxx
 
->>> echo "# coding: utf-8
+# 新建工作分支
+>>> git branch feat-git
+
+# 切换工作分支
+>>> git checkout feat-git
+
+# 新建后端服务
+>>> echo "
 import pywss
 
 app = pywss.App()
@@ -70,52 +81,74 @@ app.get('/readiness', lambda ctx: ctx.set_status_code(204))
 app.get('/liveness', lambda ctx: ctx.set_status_code(204))
 app.run()" > server.py
 
+# 将修改文件添加至暂存区
 >>> git add server.py
 
+# 将暂存区文件提交至本地仓库
 >>> git commit -m "feat: 新增server.py文件"
 
->>> git push
+# highlight-start
+# 变基
+>>> git checkout main
+>>> git pull
+>>> git checkout feat-git
+>>> git rebase main
+# highlight-end
 
+# 推送修改至远端仓库
+>>> git push
 ```
+
+在代码仓库中合并分支即可，此时我们通过 graph 图可以看到如下效果。
+
+
 
 ### 场景二
 
-:::info 场景二/新建分支提交
+:::info 场景二/团队成员B/客户端研发
 
-新增
+需求：
+1. 请实现一个客户端，要求访问服务端 8080 端口，并能正常请求 /readiness、/liveness 两个接口。
+
+需求分析：
+1. 新增 client.py 文件，基于 curl 搭建实现客户端。
+2. 新建 feat-client 分支推送代码。
+3.
+3. 分支合并。
 
 :::
 
-```bash
->>> mkdir -p /workspace/git/user-2 && cd /workspace/git/user-2
+```python showLineNumbers
+# 模拟用户A办公环境
+>>> mkdir -p /workspace/git/user-a && cd /workspace/git/user-a
 
-// 拉取仓库
+# 拉取仓库代码
 >>> git clone https://xxx.git
 
+# 进入代码目录
 >>> cd xxx
 
+# 新建工作分支
 >>> git branch feat-git
 
+# 切换工作分支
 >>> git checkout feat-git
 
->>> echo "\nupdate by branch of feat-git" >> README.md
+# 新建后端服务
+>>> echo "
+import pywss
 
->>> git add README.md
+app = pywss.App()
+app.get('/readiness', lambda ctx: ctx.set_status_code(204))
+app.get('/liveness', lambda ctx: ctx.set_status_code(204))
+app.run()" > server.py
 
->>> git commit -m "feat: update README.md"
+# 将修改文件添加至暂存区
+>>> git add server.py
 
+# 将暂存区文件提交至本地仓库
+>>> git commit -m "feat: 新增server.py文件"
+
+# 推送修改至远端仓库
 >>> git push
-
 ```
-
-执行代码分支合并
-
-
-### 场景三
-
-
-:::info 场景二/新建分支提交
-
-新增
-
-:::
