@@ -24,7 +24,7 @@ import FullScreenImage from '@site/src/components/FullScreenImage';
 <br/>
 
 :::info 👇👇👇
-**本文作者:** 橙子昂    
+**本文作者:** 橙子昂 <br/>  
 **版权声明:** 转载请注明出处哦~👮‍
 :::
 `.trim()

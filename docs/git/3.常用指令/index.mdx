@@ -4,31 +4,117 @@ slug: start
 ---
 
 import FullScreenImage from '@site/src/components/FullScreenImage';
+import HighLightText from '@site/src/components/HighLightText';
 
 <!--package-->
 
-git 常用指令其实并不多，我们的目标是满足日常工作需求即可。
+## 背景
 
-因此，根据我个人工作经验，我总结出以下常用指令：
+git 作为最先进的分布式版本控制系统，常用于源代码及其版本管理。像我们熟知的 github、gitee 等知名站点，就大量使用了 git 作为其代码管理解决方案。从其命名我们也不难看出 git 的含金量。
 
-- git add：将修改添加道暂存区
-- git commit：
-- git push：推送修改
-- git checkout：切换分支
-- git fetch
-- git rebase：变基
+尽管 git 非常重要，但实际上，要掌握 git 作为工具，需要学习的指令并不多。我们的目标是满足日常工作需求即可。
 
-接下来，我们通过模拟两个场景来完成对上述指令的练习。
 
-:::info 场景一/直接提交
+## 目的
+
+学习 git 常用指令：
+
+- **git clone：** 拉取仓库。
+- **git add：** 将修改添加到 git 的暂存区。
+- **git commit：** 将暂存区中的更改提交到本地仓库。
+- **git push：** 将本地仓库的更改推送到远程仓库。
+- **git branch：** 用于创建、列出或删除分支。
+- **git checkout：** 切换分支。
+- **git fetch：** 从远程仓库拉取最新修改，但不会自动合并它们到当前分支。
+- **git merge：** 分支合并。
+- **git rebase：** 修改分支基准点。将当前分支变基至指定分支，这可以使提交历史变得更加线性，可读性更好。
+
+## 场景模拟
+
+接下来，我们通过模拟团队多成员协作场景来完成对上述指令的练习。
+
+:::note 前提准备
+
+1. github/gitee/gitlab 上的一个空仓库
+2. 确保本地 ssh 已经正确配置
+
+:::
+
+### 场景一
+
+:::info 场景一/用户A/单分支直接提交
+
+需求：
+1. 要求搭建一个后端服务，服务暴露 8080 端口，并提供 /readiness、/liveness 两个接口。
+
+需求分析：
+1. 新增 server.py 文件，基于 pywss 搭建后端服务。
+2. 新建 feat-server 分支推送代码。
+
+:::
+
+可能有同学会问为什么需要新建分支，我的回答就是：<HighLightText>禁止直接推送主干分支！</HighLightText>
+
+```bash
+>>> mkdir -p /workspace/git/user-a && cd /workspace/git/user-a
+
+>>> git clone https://xxx.git
+
+>>> cd xxx
+
+>>> echo "# coding: utf-8
+import pywss
+
+app = pywss.App()
+app.get('/readiness', lambda ctx: ctx.set_status_code(204))
+app.get('/liveness', lambda ctx: ctx.set_status_code(204))
+app.run()" > server.py
+
+>>> git add server.py
+
+>>> git commit -m "feat: 新增server.py文件"
+
+>>> git push
+
+```
+
+### 场景二
+
+:::info 场景二/新建分支提交
 
 新增
 
 :::
 
+```bash
+>>> mkdir -p /workspace/git/user-2 && cd /workspace/git/user-2
+
+// 拉取仓库
+>>> git clone https://xxx.git
+
+>>> cd xxx
+
+>>> git branch feat-git
+
+>>> git checkout feat-git
+
+>>> echo "\nupdate by branch of feat-git" >> README.md
+
+>>> git add README.md
+
+>>> git commit -m "feat: update README.md"
+
+>>> git push
+
+```
+
+执行代码分支合并
 
 
-:::info 场景一/新建分支提交
+### 场景三
+
+
+:::info 场景二/新建分支提交
 
 新增
 
