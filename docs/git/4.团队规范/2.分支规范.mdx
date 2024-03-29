@@ -1,32 +1,76 @@
 ---
 title: 分支规范
-slug: branch
+slug: /standard-branch
 ---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
 
 ## 背景
 
+Git 作为最先进的分布式版本控制系统，能够准确记录用户的每一次新增、删除和修改等操作。特别是在团队共同维护一套系统时，分布式版本控制展现了巨大的优势。
+
+在个人仓库中，主分支一把梭毫无疑问是最简单的方式。然而，对于团队维护的项目而言，更常见的方式是每个人维护自己的分支，并进行分支协作。
+
+如果团队缺乏分支管理规范，就会导致分支的混乱和无序，最终使项目难以维护。
+
+<FullScreenImage src={require("./2.confusion-branch.png").default} />
+
+因此，一个良好的分支管理规范对于持续维护的项目至关重要。它有助于团队成员建立快速的沟通渠道，提高项目的可理解性和可维护性。
 
 
 ## 目的
 
-掌握线性分支管理
+- 学会线性分支管理
+- 养成变基好习惯
 
 
+## 学会线性分支管理
 
-## 核心：rebase
+什么是线性分支管理？
 
+线性分支管理是一种管理代码版本的方式，其核心思想是始终保持分支走势的串行性，即呈单线性走势，就像只维护了一个分支一样。
 
+<FullScreenImage src={require("./2.line-branch.png").default} />
 
+在复杂功能场景下，比如对于维护了 dev、test、release 分支的团队，仍然可以在单一分支上采用线性分支管理模式。
+这意味着所有的开发工作都在同一个主要分支上进行，而不是在不同的分支随意 merge。
 
-## 单分支（main）
+<FullScreenImage src={require("./2.dev-branch.png").default} />
 
+通过采用线性分支管理模式，团队可以确保**整个仓库的版本控制历史保持线性的走势**。这有助于简化代码的管理和版本控制，**降低合并冲突的风险**，并提高团队成员之间的协作效率。
 
+尽管线性分支管理模式可能不适用于所有情况，但对于大多数团队和项目来说，它是一种简单而有效的管理方式，可以提供清晰的代码演进历史和更好的团队协作体验。
 
+如何实现线性分支管理呢？
 
-## 多分支（dev/test）
+那就需要养成变基的好习惯。
 
+## 养成变基好习惯
 
+在前文已经多次提到过，变基（rebase）是一种重塑提交历史的技术。
 
+它可以将当前分支的修改以一种更干净、更线性的方式合并到目标分支上。通过变基，可以避免合并产生的额外提交，从而保持整个仓库的提交历史是线性的。
 
+从实际操作的角度来说，每次在推送修改之前，应该先执行以下操作，以确保本次提交是基于最新的版本：
 
+```python showLineNumbers
+>>> git checkout main
+>>> git pull
+>>> git checkout feat-server
+>>> git rebase main
+```
+
+上述命令分别意味着：
+
+1. 先切换到主分支 main，
+2. 然后拉取最新的版本，
+3. 接着切换回开发分支 feat-server，
+4. 最后进行变基操作，将当前分支的修改应用到主分支的最新版本上。
+
+通过这种方式，可以保持代码提交历史的线性走势，确保团队的代码仓库保持整洁和易于理解。
 
