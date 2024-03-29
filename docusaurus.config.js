@@ -95,9 +95,37 @@ const config = {
             to: '/docs/golang',
           },
           {
-            href: 'https://github.com/czasg',
-            label: 'GitHub',
+            type: 'dropdown',
+            label: '工具',
             position: 'right',
+            items: [
+              {
+                label: "ChatGPT",
+                href: "https://chat.openai.com/chat",
+              },
+              {
+                label: "Json2Go",
+                href: "https://mholt.github.io/json-to-go",
+              },
+              {
+                label: "圆图剪切",
+                href: "https://crop-circle.imageonline.co/cn/",
+              },
+              {
+                label: "在线工具",
+                href: "https://www.dute.org/",
+              },
+              {
+                label: "emoji",
+                to: '/emoji',
+              },
+            ],
+          },
+          {
+            href: 'https://github.com/czasg/orange-ang',
+            position: 'right',
+            className: 'header-github-link',
+            'aria-label': 'GitHub repository',
           },
         ],
       },
