@@ -4,23 +4,26 @@ slug: commit
 ---
 
 import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 <!--package-->
 
 ## 背景
 
-相信你已经知道，git commit message 是你对本次提交的摘要。
+你可能已经知道，git commit message 是对本次提交的摘要。
 
-对于你个人而言，一个简单的 commit message 可能并不会带来什么影响，但是对于团队而言，一个简陋、不可读的 commit message，完全就有可能导致了一个不可维护项目的诞生。
+对于你个人而言，一个简单的 commit message 可能并不会带来什么影响，但是对于团队而言，一个简陋、难以理解的 commit message 可能会导致项目难以维护。
 
 <FullScreenImage src={require("./1.1.png").default} />
 
-因此，一个好的 commit message 对于一个持续维护的项目而言是至关重要的，它可以帮助项目团队成员之间快速的建立沟通渠道，从而提高项目的可理解性、可维护性。包括但不限于功能迭代说明、历史修复说明等。
+因此，一个良好的 commit message 对于持续维护的项目来说是至关重要的。它有助于团队成员之间建立快速的沟通渠道，提高项目的可理解性和可维护性。这些信息包括但不限于功能迭代描述、历史修复说明等。
 
 
 ## 通用规范模板
 
-目前业界通用的 commit 规范大致如下：
+目前业界通用的 commit 规范如下：
 
 ```text
 <type>: <subject>
@@ -39,61 +42,65 @@ import FullScreenImage from '@site/src/components/FullScreenImage';
 
 其中使用最多的应该就是 `type+subject` 的组合了。
 
-```text title="常见commit提交"
+```text
 feat: 新增了xx功能
 
 1.新增xx功能
-2.删除xx功能
+2.优化xx功能
 ```
 
-对于大多数场景来说，这套规范是够用了的。
+对于大多数情况而言，这套规范已经足够使用了。
 
-但在这里，我根据个人的实际工作经验，总结出了另一套通用的结构化规范模板，这套规范拥有更强的可理解和可拓展性。
+然而，基于我个人的实际工作经验，我总结了另一套通用的结构化规范模板。这套规范具有更强的可理解性和可拓展性。
 
-### 结构化规范模板
+## 结构化规范模板
 
 首先在介绍前，我们重新梳理下，commit message 到底有哪些作用，什么人会关注它。
+在介绍之前，让我们重新梳理一下 commit message 的作用，以及受众群体。
 
-基于上面提到了内容，我们可以总结出，commit message 无外乎有两种作用：
+根据之前提到的内容，我们可以总结出 commit message 主要有两种作用：
 
-- **给人看**：作为本次提交的摘要信息，后续团队成员可以通过此摘要获取本次提交的大致修改背景、内容等信息。
-- **给脚本看**：作为本次提交的摘要信息，可以通过脚本拉出某时间段内的摘要，并自动生成报告。该报告对外可以作为内容发布，对内可以用于项目分析。
+- **给人看**：作为本次提交的摘要信息，后续团队成员可以通过此摘要了解本次提交的大致修改背景和内容。
+- **给脚本看**：作为本次提交的摘要信息，可以通过脚本提取某个时间段内的摘要，并自动生成报告。该报告可用于内容发布或项目分析。
 
-因此，我们的 commit 规范，首先，需要足够的简洁，方便开发者进行信息提取，同时，又需要有一定的结构化，这样方面脚本程序解析。
+因此，我们的 commit 规范需要既简洁易懂，以便开发者提取信息，又需要有一定的结构化，以方便脚本程序解析。
 
-综上，我们可以设计如下的 commit 规范：
+综上所述，我们可以设计以下的 commit 规范：
 
 ```
-<header>: <digest>
-<header>: <digest>
-<header>: <digest>
-<header>: <digest>
+<type>: <digest>
+<type>: <digest>
+<type>: <digest>
 
 <background>
 ```
 
-这套规范和业界通用规范很相似，但是有本质区别。它定义了两个大模块：
+这套规范与业界通用规范相似，但存在本质差异。它定义了两个主要模块:
 
-- **header+digest** 提交摘要信息。**支持多元组合**。
-- **background：** 详细描述提交的修改内容及其背景。
+- **type+digest** 用于提交摘要信息，支持多种组合方式。
+- **background** 详细描述提交的修改内容及其背景。
 
-如果你熟悉 http 报文信息，那么你会觉得这个规范很熟悉，`header: digest` 其实就是参考 http header 的一种实现。
-因此这套规范将拥有很强的扩展性、结构化等特性。同时，规范设计有 `background` 内容，用于记录 commit 详细背景描述。
+如果你熟悉 HTTP 报文信息，你会发现这个规范非常熟悉，`type+digest` 实际上是参考了 HTTP Header 的一种实现方式。 <br/>
+因此，这套规范具有很强的扩展性和结构化特性。同时，规范中设计了 `background` 内容，用于记录提交的详细背景描述。
 
 
-### 真实场景对比
+## 真实场景对比
 
-接下来让我们在不同真实场景下进行演示
+接下来，让我们在不同的真实场景下演示这两套 git commit message 模板的效果。
 
 :::info 真实场景一
 
-在我司，项目同学使用的 wiki 作为项目管理工具，研发同学则使用 jira 作为需求管理工具，而测试同学则使用 zentao 作为测试用例管理工具。
+在我司，项目同学使用的 wiki 作为项目管理工具，研发同学使用 jira 作为需求管理工具，而测试同学则使用 zentao 作为测试用例管理工具。
 
-对于这种多元化的复杂场景，一次完整的 commit 提交，应该记录哪些信息呢？
+在这种多元化的复杂场景下，一个完整的 commit 提交应该记录哪些信息呢？
 
 :::
 
-```text title="经典规范模板"
+<BrowserWindow>
+    <Tabs>
+      <TabItem value="apple" label="经典规范模板" default>
+
+```text
 feat: 新增了xx功能
 
 1.在xx模块下新增了xx接口
@@ -104,7 +111,10 @@ jira: http://jira
 zentao: http://zentao
 ```
 
-```text title="结构化规范模板"
+      </TabItem>
+      <TabItem value="orange" label="结构化规范模板">
+
+```text
 feat: 新增了xx功能
 wiki: http://wiki
 jira: http://jira
@@ -113,33 +123,73 @@ zentao: http://zentao
 因xx项目需求，需要支持xx功能，现在xx模块下新增接口，同时支持xx功能
 ```
 
+      </TabItem>
+    </Tabs>
+</BrowserWindow>
+
+在上述两套模板中，我们可以明显看出它们的重点和特点。
+
+经典规范模板主要关注于首行摘要，将重点放在了简洁的摘要信息上，而其他信息的参考价值相对较小。
+
+相比之下，结构化规范模板则更注重提供详细的背景信息。它分为摘要信息和背景信息两部分，其中摘要信息仍然扮演着重要角色，同时也显性地要求记录背景信息。
+
+在经典规范模板的详细信息部分，尽管也可以记录背景等信息，但更多的是对摘要的解释。而在结构化规范模板中，背景信息的记录是被显性要求的，这有助于使提交更具可读性和可理解性。
+
+
 :::info 真实场景二
 
 在实际开发过程中，假设我们的真实需求是修复缺陷，但实际修复过程中，往往可能需要引入一些新的特性。
 
 这时我们的 commit message 就很不好写了。
 
+在实际开发中，有时候我们需要修复缺陷，但在修复的过程中可能会引入一些新的特性或改动。
+
+这种情况下，编写合适的 commit message 可能会变得有些棘手。我们到底应该记录哪些信息呢？
+
 :::
 
-```text title="经典规范模板"
+
+
+<BrowserWindow>
+<Tabs>
+  <TabItem value="apple" label="经典规范模板" default>
+
+```text
 fix: 新增xx功能以便修复xx缺陷
 
 1.修复在xx场景下存在的缺陷
 2.在xx模块下新增了xx功能
 
-1.项目需求：http://wiki
-2.研发需求：http://jira
-3.测试用例：http://zentao
+wiki: http://wiki
+jira: http://jira
+zentao: http://zentao
 ```
 
-```text title="结构化规范模板"
+  </TabItem>
+  <TabItem value="orange" label="结构化规范模板">
+
+```text
 fix: 修复在xx场景下存在的缺陷
 feat: 在xx模块下新增了xx功能
 wiki: http://wiki
 jira: http://jira
 zentao: http://zentao
 
-因历史原因，引入xx功能，导致在xx场景下引入缺陷，现通过引入xx模块进行修复
+因历史原因，引入xx功能，导致在xx场景下引入缺陷，现通过引入xx模块进行修复。
 ```
 
-从上述真实场景中我们不难看出，结构化规范模板不在强制限定单一的类型场景，而是支持更多元化的结构组合，以应对更加复杂的场景。
+  </TabItem>
+</Tabs>
+</BrowserWindow>
+
+
+在上述两套模板中，我们可以观察到经典规范模板过于注重首行信息，因此在同时修复缺陷和引入新特性的场景下，很难做出选择。 <br/>
+只能选择其中一个重点进行关注。例如：“fix: 新增xx功能以便修复xx缺陷”，然后在正文中提供详细信息。
+
+相比之下，结构化规范模板支持更灵活的组合。例如：
+```text
+fix: 修复在xx场景下存在的缺陷
+feat: 在xx模块下新增了xx功能
+```
+这样将修复和新增操作分开，并将修复操作放在首行，更符合本次提交的主要目的。 <br/>
+然后在背景中提供详细介绍，使信息分配更加合理。

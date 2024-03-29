@@ -55,6 +55,8 @@ Git 作为最先进的分布式版本控制系统，常用于源代码及其版�
 
 可能有同学会问为什么需要新建分支，我的回答就是：<HighLightText>非个人仓库，禁止直接推送主干分支！</HighLightText>
 
+下面，我们站在团队成员A的视角，来看一次完整的作业流程是如何实施的。
+
 ```python showLineNumbers
 # 模拟用户A办公环境
 >>> mkdir -p /workspace/git/user-a && cd /workspace/git/user-a
@@ -66,10 +68,10 @@ Git 作为最先进的分布式版本控制系统，常用于源代码及其版�
 >>> cd xxx
 
 # 新建工作分支
->>> git branch feat-git
+>>> git branch feat-server
 
 # 切换工作分支
->>> git checkout feat-git
+>>> git checkout feat-server
 
 # 新建后端服务
 >>> vim server.py
@@ -92,7 +94,7 @@ app.run()
 # highlight-start
 >>> git checkout main
 >>> git pull
->>> git checkout feat-git
+>>> git checkout feat-server
 >>> git rebase main
 # highlight-end
 
@@ -100,11 +102,19 @@ app.run()
 >>> git push
 ```
 
-在上述作业流程中，相信大部分工作大家并不摸索。当然也可能会有同学对其中**变基操作**会感觉有点陌生。
+在上述工作流程中，我相信大部分工作步骤大家都不会感到陌生。当然，也许会有一些同学对其中的**变基操作**感到不太熟悉。
 
-变基操作可以修改当前分支基准点，使得整个提交记录变更更加线性，这也是后面分支规范中会提到的。
+变基操作可以修改当前分支基准点，使得整个提交记录变更更加线性，这也是后面分支规范中会重点提到的。
 
-在代码仓库中合并分支即可，此时我们通过 graph 图可以看到如下效果。
+当我们提交修改的时候，对于多人维护的项目而言，很可能其他同学已经先于你提交了修改，并将其合并到了主干分支。 <br/>
+此时你的开发分支基准点可能已经落后于最新的主干版本。这可能导致在合并代码时出现一定程度的混乱。 <br/>
+**因此，我们需要先切换到主干分支并拉取更新，确保本地仓库处于最新状态，然后切换回开发分支并进行变基操作，使其基于最新的主干版本。**
+
+<FullScreenImage src={require("./rebase.png").default} />
+
+远程仓库的分支合并可以直接在 GitLab 管理页面进行操作，此处不再演示。只需在代码仓库中进行分支合并，之后我们可以通过 graph 图来查看合并的效果，如下所示。
+
+<FullScreenImage src={require("./feat-server.png").default} />
 
 
 
@@ -113,19 +123,18 @@ app.run()
 :::info 场景二/团队成员B/客户端研发
 
 需求：
-1. 请实现一个客户端，要求访问服务端 8080 端口，并能正常请求 /readiness、/liveness 两个接口。
+1. 实现一个客户端，要求访问服务端 8080 端口，并能正常请求 /readiness、/liveness 两个接口。
 
 需求分析：
-1. 新增 client.py 文件，基于 curl 搭建实现客户端。
+1. 基于 curl 搭建实现客户端，新增 client.sh 文件。
 2. 新建 feat-client 分支推送代码。
-3.
 3. 分支合并。
 
 :::
 
 ```python showLineNumbers
 # 模拟用户A办公环境
->>> mkdir -p /workspace/git/user-a && cd /workspace/git/user-a
+>>> mkdir -p /workspace/git/user-b && cd /workspace/git/user-b
 
 # 拉取仓库代码
 >>> git clone https://xxx.git
@@ -134,26 +143,37 @@ app.run()
 >>> cd xxx
 
 # 新建工作分支
->>> git branch feat-git
+>>> git branch feat-client
 
 # 切换工作分支
->>> git checkout feat-git
+>>> git checkout feat-client
 
-# 新建后端服务
->>> echo "
-import pywss
-
-app = pywss.App()
-app.get('/readiness', lambda ctx: ctx.set_status_code(204))
-app.get('/liveness', lambda ctx: ctx.set_status_code(204))
-app.run()" > server.py
+# 新建客户端
+>>> vim client.sh
+# highlight-start
+curl http://localhost:8080/readiness
+curl http://localhost:8080/liveness
+# highlight-end
 
 # 将修改文件添加至暂存区
->>> git add server.py
+>>> git add client.sh
 
 # 将暂存区文件提交至本地仓库
->>> git commit -m "feat: 新增server.py文件"
+>>> git commit -m "feat: 新增client.sh文件"
+
+# 变基
+# highlight-start
+>>> git checkout main
+>>> git pull
+>>> git checkout feat-client
+>>> git rebase main
+# highlight-end
 
 # 推送修改至远端仓库
 >>> git push
 ```
+
+远程仓库的分支合并可以直接在 GitLab 管理页面进行操作，此处不再演示。只需在代码仓库中进行分支合并，之后我们可以通过 graph 图来查看合并的效果，如下所示。
+
+<FullScreenImage src={require("./feat-client.png").default} />
+
