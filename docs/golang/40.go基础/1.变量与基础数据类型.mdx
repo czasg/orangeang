@@ -1,0 +1,94 @@
+---
+title: 变量与基础数据类型
+slug: /golang/variable-and-data-type
+---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
+
+## 变量
+在数学中，我们经常会假设变量 `x = 1`，这代表了一个可变化的值。
+
+在计算机编程中，变量同样代表了一个可变化的值，通常用于标识和引用内存中的对象。
+
+在 Go 语言中，变量需要先进行申明定义，才可以使用。如果直接使用未定义的变量，则编译器会报错。
+
+变量的声明方式有两种：
+- 一种是使用`var`关键字进行声明
+- 一种是使用短声明方式
+
+使用`var`关键字声明变量时，可以只声明而不赋值。而使用短声明方式则需要指定初始值。
+
+<BrowserWindow>
+    <Tabs>
+        <TabItem value="apple" label="var申明变量" default>
+
+            ```go title="只申明不赋值"
+            var key string
+            key = "字符串"
+            ```
+            ```go title="申明且赋值，可以省略变量类型"
+            var key = "字符串"
+            var key string = "字符串"
+            ```
+
+        </TabItem>
+        <TabItem value="orange" label="简短申明变量">
+
+            ```go title="简短申明"
+            key := "字符串"
+            ```
+
+        </TabItem>
+    </Tabs>
+</BrowserWindow>
+
+
+## 整数类型
+
+在 Go 语言中，有着较为完善的整数类型
+
+- **int**：表示有符号整数，其大小可以是32位或64位，具体取决于所运行的平台。
+- **uint**：表示无符号整数，其大小也可以是32位或64位，取决于所运行的平台。
+- **int8、int16、int32、int64**：分别表示8位、16位、32位和64位的有符号整数。
+- **uint8、uint16、uint32、uint64**：分别表示8位、16位、32位和64位的无符号整数。
+
+这些整数类型唯一的区别就是精度范围不同。你可能会好奇为什么范围不是越大越好，那干脆全部统一一种整数类型就好了。
+就像 python 中的 int 一样。
+
+这是因为不同的精度范围所需要的存储空间不同。在某些精细化场景下，可能仅需要更小的整数范围就可以完成，这样更优雅。
+
+因此在使用整数类型时，可以根据需求选择合适的整数类型。
+
+需要注意点：
+
+- 在数值上，不同的整数类型值范围不同。
+- 在存储上，不同的整数类型存储大小不同。
+- 在使用上，需要注意它们之间不能直接替换。如果不同整数类型之间要进行计算，则可以通过强制类型转化。
+- 在计算上，超过精度范围，会发生回环。
+
+```
+var x int = 1
+var y int64 = 0
+y = int64(x) + 1
+```
+
+## 浮点类型
+
+
+## 布尔类型
+
+
+## 字符串类型
+
+
+## 字节类型
+
+
+## 符文类型
+
+
