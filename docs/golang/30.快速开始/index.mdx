@@ -5,12 +5,69 @@ hide_table_of_contents: false
 slug: quick-start
 ---
 
+Go 程序可以通过 `go run` 命令直接运行，也可以通过 `go build` 命令编译成可执行文件后再运行。
+
+在一般的开发环境中，我们通常使用 `go run` 快速启动服务，这样可以直接在开发过程中进行调试和测试。
+
+而在生产环境中，我们则通过将源码编译成可执行文件，并将可执行文件部署到生产环境中运行，这样可以提高程序的执行效率和安全性。
+
 ## 第一个Go程序
 
+第一个Go程序，那肯定要给到我们的 Hello, World!~
+
+:::note 前提准备
+
+1. linux环境
+2. go1.20.0+
+
+:::
+
+### 初始化目录
+
+首先，我们先创建一个名为 go-learn 的目录。在该目录下，创建一个名为 hello 的子目录。进入 hello 目录。
+
+```python
+>>> mkdir -p /go-learn/hello
+
+>>> cd /go-learn/hello
+```
+
+### 源代码
+
+在 hello 目录下创建一个 main.go 文件，并打开编辑器，写入以下源码：
+
+```python
+>>> vim main.go
+```
+
+```go title="/go-learn/hello/main.go" showLineNumbers
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, Golang")
+}
+```
+
+在 Go 中，`package main` 表示这个文件属于 main 包，而 `func main()` 是程序的入口函数。当程序启动时，会自动执行 main() 函数中的代码。
+
+`fmt` 是 Go 标准库中的一个包，提供了格式化 I/O 和字符串处理的功能。
+
+在这里，我们使用它来输出 "Hello, Golang" 到控制台。
 
 
+### 运行程序
 
+执行 `go run main.go` 命令执行程序。至此，我们的第一个 Hello Go 程序就完成了。
 
+```python
+>>> pwd
+/go-learn/hello
 
-## Go指令
+>>> ls
+main.go
 
+>>> go run main.go
+Hello, Golang
+```

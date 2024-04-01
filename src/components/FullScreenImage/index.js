@@ -19,7 +19,7 @@ const FullScreenImage = ({src}) => {
             const offsetY = window.innerHeight / 2 - (rect.top + rect.bottom) / 2;
             const scaleX = window.innerWidth / rect.width;
             const scaleY = window.innerHeight / rect.height;
-            const scale = Math.min(scaleX, scaleY);
+            const scale = Math.min(scaleX, scaleY) - 0.1;
             return `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
         }
         return 'none';
