@@ -1,4 +1,133 @@
 ---
-title: 控制流程
+title: 流程控制
 slug: control-flow
 ---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
+
+## 背景
+
+不同的编程语言通常都具有类似的流程控制结构，但在Go语言中，有一些独特之处。
+
+比如，Go语言没有像其他语言中的 `try ... catch ...` 异常处理机制，而是采用独有的错误链机制... <br/>
+再比如，Go语言没有`with lock.lock()`上下文管理机制，而是采用`defer`延迟函数机制... <br/>
+...
+
+本节教程主要介绍Go中常用的流程控制机制。
+
+## 目的
+
+学习并了解Go中常用的流程控制机制。
+
+## 条件语句（if）
+
+在 Go 中，`if-else`是常用的条件判断语句，其基本结构如下：
+
+```go
+if bool条件 {
+  // code
+} else if bool条件 {
+  // code
+} else {
+  // code
+}
+```
+
+<BrowserWindow>
+    <Tabs>
+        <TabItem value="apple" label="错误值判断" default>
+
+            ```go
+            caller := func() error {
+              return nil
+            }
+            err := caller()
+            if err != nil {
+              fmt.Printf("error occur：%v", err)
+            }
+            ```
+
+        </TabItem>
+        <TabItem value="orange" label="字符串包含关系判断">
+
+            ```go
+            if strings.Contains("orange-ang", "cool") {
+              fmt.Println("yes~")
+            } else if strings.Contains("orange-ang", "crazy") {
+              fmt.Println("yes~")
+            } else {
+              fmt.Println("no!")
+            }
+            ```
+
+        </TabItem>
+    </Tabs>
+</BrowserWindow>
+
+## 循环语句（for）
+
+在 Go 中，`for`是常用的循环语句，其基本结构如下：
+
+```go
+for 初始值; 条件判断; 循环处理 {
+  // code
+}
+```
+
+
+
+<BrowserWindow>
+    <Tabs>
+        <TabItem value="1" label="普通循环" default>
+
+            ```go
+            for i := 0; i < 10; i++ {
+              fmt.Println(i)
+            }
+            ```
+
+        </TabItem>
+        <TabItem value="2" label="无限循环">
+
+            ```go
+            count := 0
+            for {
+              fmt.Println(count++)
+            }
+            ```
+
+        </TabItem>
+        <TabItem value="3" label="while等价循环">
+
+            ```go
+            count := 0
+            for count < 100 {
+              fmt.Println(count++)
+            }
+            ```
+
+        </TabItem>
+        <TabItem value="4" label="循环切片">
+
+            ```go
+            arr := []int{10, 20, 30}
+            for index, value := range arr {
+              fmt.Println(index, value)
+            }
+            ```
+
+        </TabItem>
+    </Tabs>
+</BrowserWindow>
+
+## 选择语句（switch、select）
+
+## 跳转语句（break、continue、goto）
+
+## 延迟语句（defer）
+
