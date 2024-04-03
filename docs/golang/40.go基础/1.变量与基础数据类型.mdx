@@ -1,6 +1,6 @@
 ---
 title: 变量与基础数据类型
-slug: /golang/variable-and-data-type
+slug: /basics/variable-and-data-type
 ---
 
 import FullScreenImage from '@site/src/components/FullScreenImage';
@@ -11,7 +11,7 @@ import TabItem from '@theme/TabItem';
 <!--package-->
 
 ## 变量
-在数学中，我们经常会假设变量 `x = 1`，这代表了一个可变化的值。
+在数学中，我们经常会`假设变量x ...`，这里 `x` 代表了一个可变化的值。
 
 在计算机编程中，变量同样代表了一个可变化的值，通常用于标识和引用内存中的对象。
 
@@ -20,8 +20,6 @@ import TabItem from '@theme/TabItem';
 变量的声明方式有两种：
 - 一种是使用`var`关键字声明变量
 - 一种是使用简短声明变量
-
-使用`var`关键字声明变量时，可以只声明而不赋值。而使用短声明方式则需要指定初始值。
 
 <BrowserWindow>
     <Tabs>
@@ -34,6 +32,7 @@ import TabItem from '@theme/TabItem';
             ```go title="申明变量同时赋值，可以不指定变量类型"
             var key = "字符串变量"
             ```
+            使用`var`关键字声明变量时，可以只声明而不赋值。
 
         </TabItem>
         <TabItem value="orange" label="简短申明变量">
@@ -41,6 +40,7 @@ import TabItem from '@theme/TabItem';
             ```go title="简短申明"
             key := "字符串变量"
             ```
+            使用短声明方式则需要指定初始值。
 
         </TabItem>
     </Tabs>
@@ -76,7 +76,7 @@ int16 // 2字节
 int32 // 4字节
 int64 // 8字节
 ```
-- 在计算上，超过精度范围，会发生溢出，导致整数类型循环（回到相反的极值）。
+- 在计算上，超过精度范围，会**发生溢出**，导致整数类型循环（回到相反的极值）。
 ```go
 package main
 
@@ -141,9 +141,7 @@ func main() {
 - **float32**：单精度浮点数，占用32位，用于表示小数。
 - **float64**：双精度浮点数，占用64位，用于表示小数。
 
-浮点数默认是`float64`类型。
-
-这些浮点数类型主要的区别就是精度范围不同，不同的精度范围所需要的存储空间不同，因此在使用浮点数类型时，可以根据需求选择合适的浮点数类型。
+浮点数在Go语言中默认为`float64`类型。这些浮点数类型的主要区别在于精度范围的不同，但无论是哪种类型的浮点数，都存在精度损失问题。
 
 ```go title="浮点数精度损失"
 package main
@@ -260,3 +258,8 @@ URF-32 也是 Unicode 字符集的一种实现，但它采用固定长度的编�
 ```go title="https://github.com/golang/go/blob/master/src/builtin/builtin.go"
 type rune = int32
 ```
+
+这意味着在 Go 中，`rune`类型底层实际上是`int32`类型的别名。
+因此，`rune`类型可以表示一个32位的有符号整数，而且占用大小为1个字节。
+
+另外，string底层基于[]byte实现。因此两者之间支持相互转化。例如：
