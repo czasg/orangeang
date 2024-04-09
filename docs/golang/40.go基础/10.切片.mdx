@@ -1,0 +1,27 @@
+---
+title: 切片
+slug: /basics/slice
+---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
+
+在 Go 中，切片是常见的数据类型，它是一批数据的集合，开发者可以对集合进行新增、截取等操作。一个简单的切片定义如下：
+
+```go
+var home  = []string{"Alice", "Bob", "Carry", "Dada"}
+age := []int{12, 13, 15, 11}
+```
+
+```go
+for index, name := range home {
+    fmt.Printf("序号：%d/姓名：%s", index, name)
+}
+```
+
+
+

@@ -79,8 +79,6 @@ for 初始值; 条件判断; 循环处理 {
 }
 ```
 
-
-
 <BrowserWindow>
     <Tabs>
         <TabItem value="1" label="普通循环" default>
@@ -125,7 +123,74 @@ for 初始值; 条件判断; 循环处理 {
     </Tabs>
 </BrowserWindow>
 
-## 选择语句（switch、select）
+## 选择语句（switch）
+
+在 Go 中，`switch`和`select`是常用的选择语句，用于根据条件执行不同的代码块。考虑本教程之前没有介绍通道`chan`，因此暂时不会介绍`select`。
+
+```go
+// switch 语句用于根据不同的条件执行不同的代码块。
+switch value {
+case value1:
+    // 执行与 value 等于 value1 时对应的代码块
+case value2:
+    // 执行与 value 等于 value2 时对应的代码块
+default:
+    // 如果以上 case 都不满足，则执行 default 代码块（可选）
+}
+```
+
+<BrowserWindow>
+    <Tabs>
+        <TabItem value="2" label="常规使用">
+
+            ```go
+            package main
+
+            import (
+                "fmt"
+            )
+
+            func main() {
+                value := "value"
+                switch value {
+                case "value":
+                    fmt.Println("value")
+                case "value1", "value2":
+                    fmt.Println("value1/value2")
+                default:
+                    fmt.Println("default")
+                }
+            }
+            ```
+
+        </TabItem>
+        <TabItem value="3" label="fallthrough">
+
+            ```go
+            package main
+
+            import (
+                "fmt"
+            )
+
+            func main() {
+                value := "value"
+                switch value {
+                case "value":
+                    fmt.Println("value")
+                    fallthrough // 执行下一个 case 分支
+                case "value1", "value2":
+                    fmt.Println("value1/value2")
+                default:
+                    fmt.Println("default")
+                }
+            }
+            ```
+
+        </TabItem>
+    </Tabs>
+</BrowserWindow>
+
 
 ## 跳转语句（break、continue、goto）
 
