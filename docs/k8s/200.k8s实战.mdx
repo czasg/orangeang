@@ -1,0 +1,98 @@
+---
+title: k8s实战
+hide_title: false
+hide_table_of_contents: false
+slug: /action-for-k8s
+---
+
+
+CRD（Custom Resource Definition）是 Kubernetes 中用于定义自定义资源的一种机制。在 Kubernetes 中，资源通常是以 API 对象的形式存在的，比如 Pod、Service、Deployment 等。但有时候我们需要定义一些特定于业务需求的资源，而这些资源 Kubernetes 原生并不支持。这时就可以使用 CRD 来扩展 Kubernetes API，以支持这些自定义资源。
+
+CRD 的原理是通过 Kubernetes 提供的 API 扩展机制来实现的。在 Kubernetes 中，API 服务器通过一系列的 API 组（API Group）来组织 API 对象。CRD 允许用户创建新的 API 组，并在其中定义自己的资源类型。当 CRD 被创建后，Kubernetes API 服务器会注册这个新的资源类型，使得用户可以像操作其他原生资源一样操作这个自定义资源。
+
+在定义 CRD 时，主要包括以下几个步骤：
+1. **定义 API 版本和 API 组**：CRD 需要指定所属的 API 组和版本，这样才能在 Kubernetes 中唯一地标识这个资源类型。
+2. **定义资源的结构**：CRD 需要定义自定义资源的结构，包括其名称、字段、验证规则等。
+3. **创建 CRD 对象**：一旦定义好了 CRD，需要创建一个 CRD 对象来注册这个新的资源类型。
+4. **使用自定义资源**：一旦 CRD 被创建，就可以像操作其他资源一样使用这个自定义资源，比如创建、删除、查询等操作。
+
+
+
+
+我现在需要完成一个这样的练习，有一个 nginx 的deployment资源对象。我需要自定义一个控制器，当这个nginx数量少于指定阈值的时候，就出触发扩容。现在，请你实现一个 crd，内部包含两个属性：
+1、pod数量阈值
+2、每次扩容数量
+
+```yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: autoscalers.sample.k8s.io
+  annotations:
+    api-approved.kubernetes.io: "https://github.com/kubernetes/enhancements/pull/1111"
+spec:
+  group: sample.k8s.io
+  names:
+    kind: AutoScaler
+    listKind: AutoScalerList
+    plural: autoscalers
+    singular: autoscaler
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                threshold:
+                  type: integer
+                scaleUpCount:
+                  type: integer
+                selector:
+                  type: object
+                  properties:
+                    matchLabels:
+                      type: object
+                      additionalProperties:
+                        type: string
+```
+
+```yaml
+apiVersion: sample.k8s.io/v1
+kind: AutoScaler
+metadata:
+  name: nginx-autoscaler
+spec:
+  threshold: 10
+  scaleUpCount: 1
+  selector:
+    matchLabels:
+      app: nginx
+```
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+```
