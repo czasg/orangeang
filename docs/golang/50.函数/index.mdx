@@ -2,3 +2,18 @@
 title: 函数
 slug: function
 ---
+
+在计算机编程中，函数是代码逻辑块的封装。他可以提供代码的复用性，可读性，也是编程的基础。
+
+在 Go 中，函数使用`func`关键字声明。函数命名也有规范。如果是小写开头，则表示该函数是当前包的私有函数，不可以被其他包引用。
+如果是大写开头，则表示该函数是共有函数，可以被其他包引用依赖。
+
+```go
+func helloGolang() {
+    fmt.Println("hello, golang")
+}
+
+func HelloGolang() {
+    fmt.Println("hello, golang")
+}
+```
