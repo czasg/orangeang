@@ -52,6 +52,8 @@ const config = {
         sidebarPath: require.resolve('./sidebars.js'),
         editUrl: 'https://github.com/czasg/orange-ang/edit/main',
         breadcrumbs: true, // 面包屑导航
+        sidebarCollapsible: true, // 侧边栏是否可折叠
+        sidebarCollapsed: false, // 侧边栏类别是否默认被折叠
       }
     ],
     [
@@ -63,6 +65,8 @@ const config = {
         sidebarPath: require.resolve('./sidebars.js'),
         editUrl: 'https://github.com/czasg/orange-ang/edit/main',
         breadcrumbs: true, // 面包屑导航
+        sidebarCollapsible: true, // 侧边栏是否可折叠
+        sidebarCollapsed: false, // 侧边栏类别是否默认被折叠
       }
     ],
   ],

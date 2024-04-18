@@ -4,3 +4,118 @@ hide_title: false
 hide_table_of_contents: false
 slug: error-handler
 ---
+
+在大多数编程语言中，都会支持 `try` 语法。用于捕获并处理异常。最常见的做法就是在最外层套上 try ，然后程序内部会基于业务执行情况，抛出指定异常。那么在最外层就可以捕获指定异常并执行对应的处置。
+
+```python title="python try 语法"
+try:
+    if value == 0:
+        raise ValueError
+    else if value == 1:
+        raise OSError
+    else if value == 2:
+        raise Exception
+except ValueError:
+    print("ValueError")
+except OSError:
+    print("OSError")
+except Exception:
+    print("Exception")
+```
+
+但在 Go 中，错误处理是一件极具特色的事情。它没有 try 语法，采用的是 `recover` 内置函数。同时 Go 不推荐直接抛出异常，而是采用错误链的方式层层返回错误。
+
+因此，你在 Go 中会看到大量类似 `if err != nil {}` 的代码：
+
+```go
+func do() error {
+    return errors.New("do something error")
+}
+
+func handler() error {
+    err := do()
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+func start() error {
+    err = handler()
+    if err != nil {
+        return err
+    }
+    return nil
+}
+```
+
+在上述代码中我们可以看到，start 函数内部调用了 handler 函数，handler 函数又调用了 do 函数，从而形成了一条**错误链**。这条错误链层层包含，极具 Go 特色~
+
+在此案例中，其实还并不能很好的体现错误链的链式属性。在这个案例中更多的还是展现了 Go 中错误处理的方式，以一种层层传递的方式处理错误。
+
+而之所以叫错误链是因为 Go 支持对错误进行重封装（Wrap）。
+
+## 什么是 error
+
+在 Go 中，error 是一个 interface 类型。因此只要实现了 `Error() string` 方法的都可以视作一个 error 类型。
+
+因此我们可以非常轻松的实现自定义的错误类型。
+
+```
+type customError struct {
+    ErrorMessage string
+}
+
+func(c customError) Error() string {
+    return c.ErrorMessage
+}
+```
+
+这里需要重点介绍下 `errors` 这个标准库。
+
+## errors.New
+
+在 Go 中，除了自定义错误类型外，创建错误的方式主要有两种：
+- errors.New：定义一个新的 error
+- fmt.Errorf：定义一个新的 error
+
+其中需要特别注意 fmt.Errorf 中，我们知道它支持格式化，我们常见的格式化占位符。
+
+- %s：表示字符串格式
+- %d：表示整数格式
+- %v：表示默认格式
+- %#v：是Go独有的语法格式，对于结构体而言，会输出结构体字段信息，对于指针，对打印指针类型和对应的值。对于接口，会打印其动态类型和值。
+
+这里重点介绍下 %w，这也是 Go 独有的语法格式。用于对错误进行封装。
+
+```go
+err := errors.New("original error")
+err = fmt.Errorf("wrap error: %w", err)
+fmt.Println(err)
+```
+
+## 错误链
+
+## errors.Is
+在 Go 中，我们如何判断错误值，我们可以直接使用 `Error()` 获取错误值，然后判断错误。
+
+但这种方法，极low...
+
+我们更常用的是使用 errors 标准库去判断错误类型。
+
+errors.Is 是 Go 中用于判断一个错误是否包含指定类型错误的函数。
+
+
+## errors.As
+
+errors.As 用于在错误链中"取出"指定的错误类型。
+
+
+## errors.Unwrap
+
+errors.Unwrap 用于将取出上一个错误类型。
+
+
+
+
+
