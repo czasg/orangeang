@@ -5,50 +5,83 @@ hide_table_of_contents: false
 slug: /
 ---
 
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
+
 👏👏👏 这是面向小白的 Go 教程 👏👏👏
 
-## 1.背景
+Go（Golang）是由 Google 推出的编程语言，目前已被广泛运用于**后端开发、容器虚拟化**等多个领域，可以说是当今最受欢迎的编程语言之一。
 
-Go（Golang）语言是由 Google 推出的编程语言，目前已被广泛运用于后端开发、容器编排等多个领域，可以说是当今最受欢迎的编程语言之一.
-
-Go 是一种静态类型的编程语言，以其简洁、高效等优点而备受称赞，并且拥有丰富的标准库和活跃的社区支持。
+相比于其他编程语言，Go 以其**简洁、高效**等优点而备受称赞，并且拥有丰富的标准库和活跃的社区支持。
 
 本教程将深入介绍 Go 的基础原理、常见技巧以及使用规范，旨在帮助开发者快速入门并掌握 Go 语言的核心概念和应用技巧。
 
 
-## 2.目的
+## 安装
 
-- 介绍 Go 基础原理
-- 介绍 Go 常见技巧
-- 介绍 Go 使用规范
+<BrowserWindow>
+    <Tabs>
+        <TabItem value="linux-install-go" label="Linux安装Go" default>
 
+1. 确保历史go版本已删除
 
-## 3.安装 Go
-
-### 3.1.Window安装Go
-
-通过[官方下载地址](https://go.dev/dl/)下载 [go1.21.8.windows-amd64.msi](#)（当前最新版本）并执行安装。
-
-安装完成后通过 `go version` 指令验证是否安装成功。
-
-### 3.2.Linux安装Go
-
-```python title="下载最新版本的 Go 安装包"
->>> wget https://golang.org/dl/go1.21.8.linux-amd64.tar.gz
+```go
+>>> rm -rf /usr/local/go
 ```
 
-```python title="解压下载的安装包"
->>> sudo tar -C /usr/local -xzf go1.21.8.linux-amd64.tar.gz
+2. 通过官方渠道下载 [goX.XX.X.linux-amd64.tar.gz](#)，此处以 **go1.22.2.linux-amd64.tar.gz** 为例。
+
+```go
+>>> wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
+...
+>>> tar -C /usr/local -xzf go1.22.2.linux-amd64.tar.gz
+...
 ```
 
-```python title="配置 Go 环境变量"
+3. 添加环境（临时）
+
+```go
 >>> export PATH=$PATH:/usr/local/go/bin
->>> source ~/.profile
 ```
 
-```python title="验证安装是否成功"
+4. 验证
+
+```go
 >>> go version
+go version go1.22.2 linux/amd64
 ```
+
+        </TabItem>
+        <TabItem value="windows-install-go" label="Window安装Go">
+
+1. 通过[官方下载地址](https://go.dev/dl/)下载 [goX.XX.X.windows-amd64.msi](#) 并执行安装。此处以 **go1.22.2.windows-amd64.msi** 为例，下载完成后双击即可安装。
+
+2. 安装完成后打开 cmd 命令行输入 `go version` 指令验证是否安装成功。
+
+```go
+>>> go version
+go version go1.22.2 windows/amd64
+```
+
+        </TabItem>
+        <TabItem value="goland-install-go" label="Goland安装Go">
+
+1. `File->Settings->Go->GOROOT->+`
+
+2. 安装完成后打开终端命令行输入 `go version` 指令验证是否安装成功。
+
+```go
+>>> go version
+go version go1.22.2 windows/amd64
+```
+
+        </TabItem>
+    </Tabs>
+</BrowserWindow>
 
 
 <br/>
