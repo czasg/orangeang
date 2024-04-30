@@ -10,71 +10,68 @@ import TabItem from '@theme/TabItem';
 
 <!--package-->
 
-在 Go 中，Map 是一个无序的键值对集合。它由key-value键值对组成，每一个键key都是唯一的，且每一个键key都对应一个值value。
+在 Go 中，Map 是一个无序的键值对集合。它由`key-value`键值对组成，每一个 key 都是唯一的，且每一个 key 都对应一个 value。
 
-Map 的最大的特点就是高效。无论内部包含多少数据，Map都可以非常高效对数据进行操作。
+Map 的最大的特点就是**高效**。无论内部包含多少数据，Map 都可以非常高效对数据进行查找。
 
-一个 Map 的基本语法结构为：
+
+
+
+
+
+
+
+## Map初始化
+
+一个 Map 的基本语法定义为：`map[key数据类型]value数据类型`
+
+我们可以通过几个示例来快速熟悉：
+
 ```go
-map[数据类型]数据类型
+mapStrStr := map[string]string{"key": "value"}
+mapStrInt := map[string]int{"key": 666}
+mapIntInt := map[int]int{}
 ```
 
-我们可以看到 Map 包含三个部分：
-- map关键字
-- key数据类型
-- value数据类型
+在上述示例中，我们初始化了`mapStrStr`、`mapStrInt`、`mapIntInt`三个 Map，并且可以看到`key-value`是放在大括号中的。
 
-示例如下：
-```go
-map[string]string
-map[string]int
-map[int]int
-```
+除了上述这种直接声明的方式之外，Map 还支持使用`make`实现更高级的初始化方式。
 
-## 初始化
+在切片中，我们了解了`make`的使用，在 Map 中，`make`同样用于初始化，不过二者仍有一定区别：
 
-初始化 Map 的方式有多种，包括：
-- 直接声明
-- make
+- `make([]int, 0, 100)`：最多支持两个参数，分别表示切片的长度和容量。
+- `make(map[int]int, 100)`：最多支持一个参数，表示Map的空间大小。
 
-### 直接声明
-在 Go 中，可以通过直接声明的方式初始化一个 Map。
+如何理解 Map 的空间大小？
 
-```go title="声明空map"
-kv := map[string]string{}
-```
+Map 拥有扩容因子，当集合元素达到一定阈值时，就会触发扩容。因此通过`make`可以指定初始空间大小，避免高频的触发扩容。
 
-```go title="声明非空map"
-kv := map[string]string{
-    "k1": "v1",
-    "k2": "v2",
-}
-```
 
-### make
-除了直接声明之外，还可以使用`make`指定初始容量。
 
-```go title="指定初始容量"
-kv := make(map[string]string, 100)
-```
 
-map拥有扩容因子，因此当数量达到一定阈值时，就会触发扩容。因此通过make可以指定初始容量，避免高频的触发扩容。
+
+
+
+
 
 
 ## Map操作
 
 ### 插入
-在 Go 中，对 map 进行插入采用如下方式：
+在 Go 中，可以使用 key 实现对 Map 的插入操作。下面我们通过一个简单的示例来演示映射的插入操作：
 
 ```go
 kv := map[string]string{}
+
+// 插入两个元素
 kv["k1"] = "v1"
 kv["k2"] = "v2"
+
 fmt.Println(len(kv)) // 2
 ```
 
 ### 删除
-在 Go 中，对 map 进行删除使用 delete 函数。
+在 Go 中，可以使用`delete`函数实现对 Map 的删除操作。
 
 ```go
 kv := map[string]string{
@@ -87,9 +84,14 @@ fmt.Println(len(kv)) // 1
 ```
 
 ### 查找
-在 Go 中，使用 map 进行查找时需要注意其返回值。如果值存在，则返回对应的值，如果值不存在，则仍然返回该值对应的零值。
+在 Go 中，对 Map 进行查找是一件很有意思的事情。因为无论 key 是否存在，Map 都会返回值给你。
 
-这就意味着，无论无法，map 始终会返回值给你。为了更好的区别值是否存在，map支持返回第二个参数，这是一个布尔类型的值，用于判断该值是否存在。
+- 当 key 存在时：返回对应的 value 值。
+- 当 key 不存在时：返回对应数据类型的零值。
+
+因此，我们无法通过 Map 的返回值来判断 key 是否存在，因为总是有返回值。
+
+于是，Go 在 Map 查询操作时，额外返回了一个布尔类型的值，用于判断 key 是否存在。
 
 ```go title="返回一个值"
 kv := map[string]string{
@@ -113,23 +115,59 @@ v2, ok := kv["不存在的值"]
 fmt,Println(v2, ok) // "", false
 ```
 
+## 进阶-Map底层原理
 
-## 进阶-Map查找原理
-map底层是基于哈希表实现的。
+Map 底层是基于哈希表实现的。
 
-一次完成的查找过程包括：
-1.对key进行算哈希
-2.用哈希对数组长度进行取余，获取数组下标
-3.在数组对应下标查找元素
-4.当存在哈希冲突时，在对应的哈希桶链表查找元素
+哈希表本质是一个类似数组的结构，通过数组的下标，可以快速且唯一定位一个值。因此在对哈希表操作时，只要知道要操作元素所在的数组位置，就可以实现高效查找。
 
-当进行操作时，首先对键值对算哈希，然后用计算出来的哈希值对哈希数组长度进行取余。从而一个键值对可以唯一命中一个哈希桶。
+那么如何快速知道一个 key 属于哪一个数组位置呢？
 
-当不同的键值命中同一个哈希桶时，这种就叫做哈希冲突。此时可以通过拉出一个链表的方式存储冲突的键值对数据。
+答案就是哈希映射。
+
+我们可以通过对 key 进行哈希运算，然后将哈希值对数组大小进行取余运算，这样 key 就可以安全的落在哈希表中，从而实现了 key 到哈希表的快速查找。
+
+此处提供一个简单的模拟代码，帮助大家理解：
+
+```
+package main
+
+const arraySize = 10
+
+// 假设这是一个简单的哈希函数，将字符串转换为整数
+func hash(key string) int {
+	var sum int
+	for _, char := range key {
+		sum += int(char)
+	}
+	return sum
+}
+
+func main() {
+	// 创建一个长度为 arraySize 的数组，用于模拟哈希表
+	hashTable := make([][]string, arraySize)
+
+	// 示例键值对
+	keys := []string{"a", "b", "c", "d", "e", "f", "g"}
+
+	// 将键值对哈希并插入哈希表
+	for _, key := range keys {
+		// 计算下标
+		hashValue := hash(key)
+		index := hashValue % arraySize
+		// 写入对应数组
+		if hashTable[index] == nil {
+			hashTable[index] = make([]string, 0)
+		}
+		hashTable[index] = append(hashTable[index], key)
+	}
+}
+
+```
 
 
 ## 进阶-Map扩容原理
 map 扩容就是申请一个更大的哈希表，然后将当前哈希表的元素迁移到新的哈希表中。
 
-这个过程会涉及到重新计算key哈希，因此也叫rehash。
+这个过程会涉及到重新计算key哈希，因此也叫`rehash`。
 
