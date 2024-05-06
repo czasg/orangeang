@@ -10,11 +10,9 @@ import TabItem from '@theme/TabItem';
 
 <!--package-->
 
-编程是一项极具逻辑思维的工作。
+编程是一项极具逻辑思维的工作，流程控制则是编程的基础。
 
-流程控制则是编程的基础。开发者通过流程控制编写特定的代码，从而控制程序的执行顺序与逻辑。
-
-通过条件判断、循环处理以及中断等基本的流程控制手段，开发者能够实现更为复杂的业务逻辑和功能。
+在编程过程中，开发者通过编写特定的代码实现流程控制，比如条件判断、循环处理以及中断等，通过这些方法开发者能够实现更为复杂的业务逻辑和功能。
 
 
 
@@ -30,170 +28,317 @@ import TabItem from '@theme/TabItem';
 在 Go 中，`if-else`是常用的条件判断语句，其基本结构如下：
 
 ```go
-if bool条件 {
+if 条件 {
   // code
-} else if bool条件 {
+} else if 条件 {
   // code
 } else {
   // code
 }
 ```
 
-<BrowserWindow>
-    <Tabs>
-        <TabItem value="apple" label="错误值判断" default>
+下面通过一些简单的示例来演示下条件语句的使用：
 
-            ```go
-            caller := func() error {
-              return nil
+```go
+op := "orange"
+
+if op == "coding" {
+  // code
+  fmt.Println("it's coding")
+
+} else if op == "bug" {
+  // code
+  fmt.Println("it's bug")
+
+} else {
+  // code
+  fmt.Println("unknown op")
+}
+```
+
+在上述示例中，我们可以看到不同的`op`值会触发不同的代码块，整体逻辑相对清晰。当然，如果你运气足够好，在工作中遇到过`if地狱`，那么你对下面代码可能会感到额外亲切~
+
+```go title="if地狱"
+if number >= 0 {
+    if number >= 10 {
+        if number >= 20 {
+            if number >= 30 {
+                if number >= 40 {
+                    if number >= 50 {
+                        if number >= 60 {
+                            if number >= 70 {
+                                if number >= 80 {
+                                    if number >= 90 {
+                                        fmt.Println("it's nb plus")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            err := caller()
-            if err != nil {
-              fmt.Printf("error occur：%v", err)
-            }
-            ```
-
-        </TabItem>
-        <TabItem value="orange" label="字符串包含关系判断">
-
-            ```go
-            if strings.Contains("orange-ang", "cool") {
-              fmt.Println("yes~")
-            } else if strings.Contains("orange-ang", "crazy") {
-              fmt.Println("yes~")
-            } else {
-              fmt.Println("no!")
-            }
-            ```
-
-        </TabItem>
-    </Tabs>
-</BrowserWindow>
+        }
+    }
+}
+```
 
 ## 循环语句（for）
 
 在 Go 中，`for`是常用的循环语句，其基本结构如下：
 
 ```go
-for 初始值; 条件判断; 循环处理 {
+for 变量声明; 条件判断; 变量迭代 {
   // code
 }
 ```
 
+我们可以看到一个循环由三部分组成：
+
+- **变量声明**：变量初始化，比如`count := 0`
+- **条件判断**：条件判断逻辑，比如`count <= 100`
+- **变量迭代**：变量迭代逻辑，比如`count++`
+
+但实际上循环语句并不强制要求这三个模块，因此一个简单的`for`也可以有很多不同的玩法~ 下面演示一些常见的使用方法：
+
 <BrowserWindow>
     <Tabs>
-        <TabItem value="1" label="普通循环" default>
+        <TabItem value="loop" label="普通循环" default>
 
-            ```go
-            for i := 0; i < 10; i++ {
-              fmt.Println(i)
-            }
-            ```
-
-        </TabItem>
-        <TabItem value="2" label="无限循环">
-
-            ```go
-            count := 0
-            for {
-              fmt.Println(count++)
-            }
-            ```
+```go
+for count := 0; count <= 100; count++ {
+    fmt.Println("这是一个普通循环")
+}
+```
 
         </TabItem>
-        <TabItem value="3" label="while等价循环">
+        <TabItem value="loop-forever" label="无限循环">
 
-            ```go
-            count := 0
-            for count < 100 {
-              fmt.Println(count++)
-            }
-            ```
+```go
+for {
+    fmt.Println("这是一个无限循环")
+}
+```
 
         </TabItem>
-        <TabItem value="4" label="循环切片">
+        <TabItem value="custom-loop" label="自定义变量迭代">
 
-            ```go
-            arr := []int{10, 20, 30}
-            for index, value := range arr {
-              fmt.Println(index, value)
-            }
-            ```
+```go
+for count := 0; count < 100; {
+    // 把变量迭代放到代码块中，以实现更复杂的变量迭代
+    if count < 50 {
+        // 指数增长
+        count *= 2
+    } else {
+        // 线性增长
+        count++
+    }
+}
+```
 
         </TabItem>
     </Tabs>
 </BrowserWindow>
 
-## 选择语句（switch）
+在上述示例中我们可以看到，每一个循环都可以通过设置条件判断来限制循环次数，如果没有条件判断的限制，那么这将是一个无限循环。
 
-在 Go 中，`switch`和`select`是常用的选择语句，用于根据条件执行不同的代码块。考虑本教程之前没有介绍通道`chan`，因此暂时不会介绍`select`。
+当然如果只靠循环本身，能实现的功能是有限的。因此，在循环中，还可以结合跳转语句来实现更多样的逻辑控制：
 
+- **跳转语句-break**：提前结束一个循环
 ```go
-// switch 语句用于根据不同的条件执行不同的代码块。
-switch value {
-case value1:
-    // 执行与 value 等于 value1 时对应的代码块
-case value2:
-    // 执行与 value 等于 value2 时对应的代码块
-default:
-    // 如果以上 case 都不满足，则执行 default 代码块（可选）
+for count := 0; count <= 100; count++ {
+  if count == 50 {
+    fmt.Println("提前跳出循环")
+    break
+  }
 }
 ```
+
+- **跳转语句-continue**：提前进入下一个循环
+```go
+for count := 0; count <= 100; count++ {
+  if count < 50 {
+    fmt.Println("提前进入下一次循环")
+    continue // 提前进入下一次循环，不会执行后面的代码
+  }
+  break
+}
+```
+
+
+## 选择语句（switch）
+
+在 Go 中，`switch`是常用的选择语句，通常情况下和`if-else`是等价的。其基本结构如下：
+
+```go
+switch value {
+case value1: // equal `if value == value1`
+    // code
+case value2: // equal `if value == value2`
+    // code
+default:     // equal `else`
+    // code
+}
+```
+
+在上述语法结构中，我们可以等价的把每一个 case 项比作一个 if 条件判断，因此不少开发者认为使用 `switch-case` 通常比 `if-else` 更加优雅。
+
+需要注意的是，`switch` 支持 `fallthrough` 关键字，使用后会执行下一个 case 分支，这通常会破坏 case 分支的独立性，影响程序可阅读性，因此大部分场景下是不建议使用的。
 
 <BrowserWindow>
     <Tabs>
         <TabItem value="2" label="常规使用">
 
-            ```go
-            package main
+```go
+package main
 
-            import (
-                "fmt"
-            )
+import (
+    "fmt"
+)
 
-            func main() {
-                value := "value"
-                switch value {
-                case "value":
-                    fmt.Println("value")
-                case "value1", "value2":
-                    fmt.Println("value1/value2")
-                default:
-                    fmt.Println("default")
-                }
-            }
-            ```
+func main() {
+    value := "value"
+
+    switch value {
+    case "分支1":
+        // code
+        fmt.Println("命中分支1")
+
+    case "分支2":
+        // code
+        fmt.Println("命中分支2")
+
+    default:
+        fmt.Println("default")
+    }
+}
+```
 
         </TabItem>
         <TabItem value="3" label="fallthrough">
 
-            ```go
-            package main
+```go
+package main
 
-            import (
-                "fmt"
-            )
+import (
+    "fmt"
+)
 
-            func main() {
-                value := "value"
-                switch value {
-                case "value":
-                    fmt.Println("value")
-                    fallthrough // 执行下一个 case 分支
-                case "value1", "value2":
-                    fmt.Println("value1/value2")
-                default:
-                    fmt.Println("default")
-                }
-            }
-            ```
+func main() {
+    value := "value"
+
+    switch value {
+    case "分支1":
+        // code
+        fmt.Println("命中分支1")
+        // highlight-next-line
+        fallthrough // 会执行分支2的代码块
+
+    case "分支2":
+        // code
+        fmt.Println("命中分支2")
+
+    default:
+        fmt.Println("default")
+    }
+}
+```
 
         </TabItem>
     </Tabs>
 </BrowserWindow>
 
 
-## 跳转语句（break、continue、goto）
+## 跳转语句（goto）
+
+在 Go 中，`goto`是可选的跳转语句之一，它的作用是引导代码逻辑跳转到指定的锚点位置。在某些特殊场景下会让代码非常简洁，但滥用`goto`导致的屎山代码也是很常见的。
+
+使用`goto`之前需要先定义一个锚点，定义规范为：`锚点 + 冒号`。下面通过一个简单的示例演示下`goto`的使用方法：
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    status := "success"
+
+    switch status {
+    case "success":
+        // highlight-next-line
+        goto SUCCESS
+    case "failure":
+        // highlight-next-line
+        goto FAILURE
+    default:
+        return
+    }
+
+// highlight-next-line
+SUCCESS:
+    fmt.Println("success")
+    return
+// highlight-next-line
+FAILURE:
+    fmt.Println("failure")
+    return
+}
+```
+
+在上述代码中，我们定义了`SUCCESS`和`FAILURE`两个锚点，然后在代码逻辑中，我们可以通过`goto`关键字直接跳转到指定的锚点，从而简化程序执行流程。
 
 ## 延迟语句（defer）
+
+延迟语句是 Go 语言中非常具有特色的设计之一。
+
+在 Go 中，开发者可以通过`defer`来实现延迟函数的的调用。由于它具有在程序`panic`之后仍然可以正常执行的特性，因此`defer`经常被用于资源的释放，比如文件句柄，锁等资源对象。
+
+在使用过程中需要注意以下几点：
+
+- **后进先出**：在函数中，可以定义多个延迟函数，他们遵循后进先出的原则，即最后定义的最先执行。
+- **return后执行**：在函数中，延迟函数定义后不会立即执行，而是等待业务代码执行完并return后，才会开始执行。
+
+<BrowserWindow>
+    <Tabs>
+        <TabItem value="file-open-close" label="文件操作">
+
+```go
+package main
+
+import "os"
+
+func main() {
+    f, err := os.Open("filename")
+    if err != nil {
+        panic(err)
+    }
+    // highlight-next-line
+    defer f.Close()
+
+    // code
+}
+```
+
+        </TabItem>
+        <TabItem value="lock" label="锁操作">
+
+```go
+package main
+
+import "sync"
+
+var lock = sync.Mutex{}
+
+func main() {
+    lock.Lock()
+    // highlight-next-line
+    defer lock.Unlock()
+
+    // code
+}
+```
+
+        </TabItem>
+    </Tabs>
+</BrowserWindow>
+
 
