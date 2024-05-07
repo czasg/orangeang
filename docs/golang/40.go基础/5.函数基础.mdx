@@ -1,0 +1,56 @@
+---
+title: 函数基础
+slug: /basics/func
+---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
+
+在计算机编程中，函数是**代码逻辑块的封装**，它在一定程度上实现了代码逻辑的复用与解耦。
+
+在 Go 中，可以使用关键字`func`声明一个函数，其语法结构为：
+
+```go
+func 函数名(参数 参数类型 ...) 返回值 ... {
+    函数体
+    ...
+}
+```
+
+我们可以看到，一个函数由以下四个部分组成：
+
+- **函数名**：函数命名仅支持**字母、数字、下划线**，且不能以数字开头。
+- **参数**：函数可以有零个或多个参数，每个参数都需要指定数据类型，多个参数之间逗号分割。
+- **返回值**：函数可以有零个或多个返回值，每个返回值都需要指定数据类型，多个返回值之间逗号分割。
+- **函数体**：具体的代码逻辑块，由花括号`{}`包围。
+
+
+在声明函数时需要注意以下几点：
+
+1. 函数可见性：函数的可见性由其首字母的大小写决定。如果函数名以大写字母开头，则该函数可以被其他包访问。如果函数名以小写字母开头，则该函数只能在同一包内部访问。
+
+```go
+func helloGolang() {
+    fmt.Println("hello, golang")
+}
+
+func HelloGolang() {
+    fmt.Println("hello, golang")
+}
+```
+
+2. 命名规范：
+
+
+
+
+
+## 函数参数
+
+## main函数
+
+## init函数
