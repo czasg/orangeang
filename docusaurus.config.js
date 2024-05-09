@@ -59,6 +59,19 @@ const config = {
     [
       '@docusaurus/plugin-content-docs',
       {
+        id: 'nginx',
+        path: 'docs/nginx',
+        routeBasePath: '/docs/nginx',
+        sidebarPath: require.resolve('./sidebars.js'),
+        editUrl: 'https://github.com/czasg/orange-ang/edit/main',
+        breadcrumbs: true, // 面包屑导航
+        sidebarCollapsible: true, // 侧边栏是否可折叠
+        sidebarCollapsed: false, // 侧边栏类别是否默认被折叠
+      }
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
         id: 'golang',
         path: 'docs/golang',
         routeBasePath: '/docs/golang',
@@ -93,6 +106,10 @@ const config = {
           {
             label: "Git教程",
             to: '/docs/git',
+          },
+          {
+            label: "Nginx教程",
+            to: '/docs/nginx',
           },
           {
             label: "Golang教程",

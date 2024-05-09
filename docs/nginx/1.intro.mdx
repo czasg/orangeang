@@ -1,0 +1,38 @@
+---
+title: 前言
+hide_title: false
+hide_table_of_contents: false
+slug: /
+---
+
+<p align="center">
+  <img src={require('./nginx-logo.png').default}></img>
+</p>
+
+Nginx 教程
+
+## 安装
+
+本教程中关于 nginx 研发都是基于 docker 容器实现的，请先安装 docker。
+
+```bash
+docker pull nginx
+```
+
+```bash
+docker run -it --rm --entrypoint=nginx nginx -V
+```
+
+启动
+
+```bash
+docker run -it --rm -p 8080:80 nginx
+```
+
+
+<br/>
+
+:::info 👇👇👇
+**本文作者:** 橙子昂 <br/>
+**版权声明:** 转载请注明出处哦~👮‍
+:::
