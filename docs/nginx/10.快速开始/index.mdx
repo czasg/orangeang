@@ -1,0 +1,189 @@
+---
+title: 快速开始
+hide_title: true
+hide_table_of_contents: false
+slug: /quick-start
+---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
+
+:::note 注意
+
+本教程基于docker搭建nginx，请确保docker正确安装~
+
+:::
+
+启动 Nginx 服务后，它内部会启动一个主进程和多个子进程，其中：
+
+- 主进程：负责启动、停止、管理子进程，并接收外部信号，包括重载配置、服务停止等。
+- 子进程：处理连接与请求，相互之间独立，某一个子进程异常不会影响其他子进程服务。
+
+## 快速开始
+
+### 1. 启动服务
+
+我们可以通过 docker 一键启动 nginx 服务：
+
+```bash
+$ docker run -it --rm -p 80:80 nginx
+```
+
+在上述指令中，我们启动了 nginx 服务，并对外暴露了 8080 端口，因此我们可以通过访问本地 8080 端口来验证 nginx 可用性。
+
+### 2. 验证服务
+
+通过浏览器访问地址 [http://localhost/](#) 我们可以看到 **Welcome yo ngixn** 页面。
+
+<BrowserWindow url="http://localhost/">
+<div align="center">
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>. <br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+<p><em>Thank you for using nginx.</em></p>
+</div>
+</BrowserWindow>
+
+## 自定义服务配置
+
+在快速开始过程中，我们使用了默认的nginx配置。默认的配置内容见下：
+
+```yaml title="/etc/nginx/conf.d/default.conf"
+server {
+    listen       80;
+    server_name  localhost;
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+```
+
+在配置文件中我们可以看到`location`关键字，它用于定义请求的匹配规则，以及匹配之后的处理逻辑。
+
+本节将自定义一些简单匹配规则，并实现：
+
+- 访问 `/index` 时返回自定义静态文件 index.html
+- 访问 `/hello/{name}` 时返回 hello XXX
+
+### 1. 准备文件
+
+要实现需求，我们需要准备两个文件：
+
+- **default.conf**：表示 nginx 配置文件
+- **index.html**：表示静态页面文件
+
+<BrowserWindow>
+    <Tabs>
+        <TabItem value="apple" label="/workspace/default.conf" default>
+
+```yaml
+server {
+    listen       80;
+    server_name  _;
+
+    # 匹配以 /index 开头的请求
+    location /index {
+        # 指定根目录
+        alias  /workspace;
+        # 指定默认返回的文件
+        index  index.html;
+    }
+
+    # 使用正则表达式捕获 URL 中的 {name} 参数
+    location ~ /hello/(?<name>\w+) {
+        # 设置响应头
+        add_header Content-Type text/plain;
+        # 返回响应
+        return 200 "Hello $name";
+    }
+}
+```
+
+        </TabItem>
+        <TabItem value="orange" label="/workspace/index.html">
+
+```html
+<h1>Welcome to Nginx!</h1>
+```
+
+        </TabItem>
+    </Tabs>
+</BrowserWindow>
+
+### 2. 启动服务
+
+```bash
+$ docker run -it --rm -p 80:80 \
+    -v /workspace/default.conf:/etc/nginx/conf.d/default.conf \
+    -v /workspace/index.html:/workspace/index.html \
+    nginx
+```
+
+### 3. 验证服务
+
+访问`http://localhost/index`
+
+<BrowserWindow url="http://localhost/index">
+
+<h1>Welcome to nginx!</h1>
+
+</BrowserWindow>
+
+访问`http://localhost/hello/orange-ang`
+
+<BrowserWindow url="http://localhost/hello/orange-ang">
+
+hello orange-ang
+
+</BrowserWindow>
+
+<br/>
+
+:::info 👇👇👇
+**本文作者:** 橙子昂 <br/>
+**版权声明:** 转载请注明出处哦~👮‍
+:::

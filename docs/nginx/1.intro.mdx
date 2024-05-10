@@ -5,28 +5,46 @@ hide_table_of_contents: false
 slug: /
 ---
 
-<p align="center">
-  <img src={require('./nginx-logo.png').default}></img>
-</p>
+<br/>
 
-Nginx 教程
+<div align="center">
+  <img src={require('./nginx-logo.png').default}></img>
+</div>
+
+<br/>
+<br/>
+
+Nginx 是世界上最流行的应用软件之一，几乎每三个网站中就有一个使用 Nginx。
+
+它的特点是高性能和支持热部署，可以在不中断服务的情况下对配置进行升级。因此 Nginx 被广泛应用于多种场景下，包括：
+
+- **API网关**：在微服务体系下，配合 Lua 实现限流、熔断等网关功能。
+- **反向代理服务器**：对内屏蔽真实服务器地址，对外提供请求转发服务。
+- **负载均衡服务器**：对外提供统一入口，对内将流量分布到多个服务器上。
+- **文件服务器**：对内关联静态文件，对外提供网络文件服务。
 
 ## 安装
 
-本教程中关于 nginx 研发都是基于 docker 容器实现的，请先安装 docker。
+本教程中 nginx 演示都是基于 docker 容器实现的，因此请先确保正确[安装docker](#)。
 
-```bash
-docker pull nginx
+当 docker 安装好后，可以开始拉取并验证 nginx 镜像。
+
+```bash title="拉取nginx镜像"
+$ docker pull nginx
 ```
 
-```bash
-docker run -it --rm --entrypoint=nginx nginx -V
+```bash title="查看nginx版本信息"
+$ docker run -it --rm --entrypoint=nginx nginx -V
 ```
 
-启动
+我们可以看到类似的输出即表明一切已经准备ok啦~
 
-```bash
-docker run -it --rm -p 8080:80 nginx
+```
+nginx version: nginx/1.21.5
+built by gcc 10.2.1 20210110 (Debian 10.2.1-6)
+built with OpenSSL 1.1.1k  25 Mar 2021
+TLS SNI support enabled
+configure arguments: ...
 ```
 
 
