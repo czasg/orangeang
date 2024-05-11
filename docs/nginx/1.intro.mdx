@@ -14,7 +14,7 @@ slug: /
 <br/>
 <br/>
 
-Nginx 是世界上最流行的应用软件之一，几乎每三个网站中就有一个使用 Nginx。
+Nginx 是世界上最流行的应用软件之一，几乎每三个网站中就有一个使用了 Nginx。
 
 它的特点是高性能和支持热部署，可以在不中断服务的情况下对配置进行升级。因此 Nginx 被广泛应用于多种场景下，包括：
 
@@ -25,27 +25,31 @@ Nginx 是世界上最流行的应用软件之一，几乎每三个网站中就�
 
 ## 安装
 
-本教程中 nginx 演示都是基于 docker 容器实现的，因此请先确保正确[安装docker](#)。
+本教程中关于 nginx 的演示都是基于 docker 完成的，因此请先确保 [安装docker](#)。
 
-当 docker 安装好后，可以开始拉取并验证 nginx 镜像。
+安装好 docker 后就可以执行以下操作进行验证。
 
-```bash title="拉取nginx镜像"
+1. 拉取nginx镜像
+
+```bash
 $ docker pull nginx
 ```
 
-```bash title="查看nginx版本信息"
+2. 查看nginx版本信息
+
+```bash
 $ docker run -it --rm --entrypoint=nginx nginx -V
 ```
 
-我们可以看到类似的输出即表明一切已经准备ok啦~
-
-```
+```text title="版本信息"
 nginx version: nginx/1.21.5
 built by gcc 10.2.1 20210110 (Debian 10.2.1-6)
 built with OpenSSL 1.1.1k  25 Mar 2021
 TLS SNI support enabled
 configure arguments: ...
 ```
+
+如果可以看到类似的输出即表明一切已经准备ok啦~
 
 
 <br/>
