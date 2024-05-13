@@ -7,6 +7,7 @@ slug: /file-server/static-file-server
 
 import FullScreenImage from '@site/src/components/FullScreenImage';
 import BrowserWindow from '@site/src/components/BrowserWindow';
+import EmptyLine from '@site/src/components/EmptyLine';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -26,13 +27,13 @@ Nginx 搭建静态文件服务器，需要指定一个目录作为静态文件�
   └── index.html
 ```
 
-在这个目录结构中，我们可以看到根目录`/static`下面存放了`html`、`js`、`css`等文件。
+在这个目录结构中，我们可以看到根目录`/static`下面存放了`html`、`js`、`css`等文件。为了更好的理解，我们假设每个文件的内容就是文件自身的详细路径~
 
 这样我们就可以开始准备 nginx 配置文件了。
 
 ## root
 
-在 nginx 中，`root`关键字可以指定一个目录作为静态文件存储路径配置。当请求命中路由规则时，**会将路径拼接在`root`路径之后去查找文件！**
+在 nginx 中，`root`关键字可以指定一个目录作为静态文件存储路径配置。当请求命中路由规则时，会将**路径拼接在`root`路径之后去查找文件！**
 
 为了更好的理解`root`的作用，我们假设定义了如下的路由规则：
 
@@ -42,11 +43,11 @@ location / {
 }
 ```
 
-当请求路径为`/static/css/custom.css`时，我们会发现 nginx 命中路径为`/static/static/css/custom.css`！因此无法找到对应的文件。
+当请求路径为`/static/css/custom.css`时，我们会发现 nginx 查找文件的路径为`/static/static/css/custom.css`！因此无法找到对应的文件。
 
 所以我们需要调整请求路径为`/css/custom.css`，这时 nginx 就可以正确命中`/static/css/custom.css`文件。
 
-了解`root`的原理之后，我们可以开始准备 nginx 配置文件。
+大致了解`root`的原理之后，我们可以开始准备 nginx 配置文件。
 
 ### 1. 准备配置文件
 
@@ -69,6 +70,10 @@ server {
 
 在上述配置中，我们可以看到定义了一个`location /`，表示所有的请求都会命中此规则。并且指定了根目录为`/static`，这样我们就可以将此目录映射到静态文件服务器中了。
 
+:::note 补充
+error_page 可以检测请求响应的错误码，从而实现内部转发能力。
+:::
+
 ### 2. 启动服务
 
 ```bash
@@ -82,21 +87,88 @@ $ docker run -it --rm -p 80:80 \
 
 通过浏览器访问`http://localhost`，如果可以看到`index.html`页面，那就说明规则已经生效。
 
+<BrowserWindow url="http://localhost/">
+
+/static/index.html
+
+</BrowserWindow>
+
 通过浏览器访问`http://localhost/css/custom.css`，如果可以看到`custom.css`页面，那就说明规则已经生效。
 
-通过浏览器访问`http://localhost/123`，这是一个不存在的页面，这时我们如果可以看到`notfound.html`页面，那就说明规则`error_page  404  /notfound.html;`已经生效。
+<BrowserWindow url="http://localhost/css/custom.css">
+
+/static/css/custom.css
+
+</BrowserWindow>
+
+通过浏览器访问`http://localhost/123`，这是一个不存在的页面，这时我们如果可以看到`notfound.html`页面，那就说明规则`error_page`已经生效。
+
+<BrowserWindow url="http://localhost/123">
+
+/static/notfound.html
+
+</BrowserWindow>
+
+
+## alias
+
+在 nginx 中，`alias`和`root`一样可以指定服务器上静态文件的根目录。但他们之间有一些细微的差别，前者**不会拼接请求路径**，而后者会**拼接请求路径**！
+
+同样为了更好的理解`alias`的作用，我们假设定义了如下的路由规则：
+
+```yaml
+location / {
+    root   /static;
+}
+```
+
+当请求路径为`/static/css/custom.css`时，我们会发现 nginx 查找文件的路径为`/static/css/custom.css`！
+
+因此可以找到目标文件！这和我们上面讲到的`root`显然是有区别的。
+
+### 1. 准备配置文件
+
+```yaml title="/workspace/default.conf"
+server {
+    listen       80;
+    server_name  _;
+
+    # 静态文件服务器
+    location / {
+        # 指定根目录
+        root   /static;
+        # 指定默认返回的文件
+        index  index.html;
+    }
+    # 文件不存在
+    error_page  404  /notfound.html;
+}
+```
+
+在上述配置中，我们可以看到定义了一个`location /`，表示所有的请求都会命中此规则。并且指定了根目录为`/static`，这样我们就可以将此目录映射到静态文件服务器中了。
 
 :::note 补充
 error_page 可以检测请求响应的错误码，从而实现内部转发能力。
 :::
 
+### 2. 启动服务
 
+```bash
+$ docker run -it --rm -p 80:80 \
+    -v /workspace/default.conf:/etc/nginx/conf.d/default.conf \
+    -v /static:/static \
+    nginx
+```
 
+### 3. 验证功能
 
+通过浏览器访问`http://localhost`，如果可以看到`index.html`页面，那就说明规则已经生效。
 
-## alias
+<BrowserWindow url="http://localhost/">
 
-虽然`root`和`alias`指定服务器上静态文件的根目录，但他们之间有一些细微的差别。
+    /static/index.html
+
+</BrowserWindow>
 
 
 ## try_files

@@ -7,6 +7,7 @@ slug: /quick-start
 
 import FullScreenImage from '@site/src/components/FullScreenImage';
 import BrowserWindow from '@site/src/components/BrowserWindow';
+import EmptyLine from '@site/src/components/EmptyLine';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -158,9 +159,12 @@ server {
     }
 }
 ```
+
 在上述配置文件中，定义了两个核心匹配规则：
 - `location /index`：匹配以 /index 开头的请求
-- `location ~ /hello/(?<name>\w+)`：匹配以 /hello/xxx 类型的请求，并使用正则表达式捕获 URL 中的 {name} 参数
+- `location ~ /hello/(?<name>\w+)`：匹配以 /hello/xxx 类型的请求，并使用正则表达式捕获 URL 中的 {name} 参数。
+
+<EmptyLine line={0}/>
 
         </TabItem>
         <TabItem value="orange" label="/workspace/index.html">
