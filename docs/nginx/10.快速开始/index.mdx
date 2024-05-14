@@ -19,14 +19,18 @@ import TabItem from '@theme/TabItem';
 
 :::
 
+## 架构简介
+
 启动 Nginx 服务后，它内部会启动一个主进程和多个子进程，其中：
 
 - 主进程：负责启动、停止、管理子进程，并接收外部信号，包括重载配置、服务停止等。
 - 子进程：处理连接与请求，相互之间独立，某一个子进程异常不会影响其他子进程服务。
 
+在容器环境中可以暂时不用关注架构方面的细节。
+
 ## 快速开始
 
-在本章节中，我们将使用 nginx 默认配置启动服务。
+在本章节中，我们将使用 **nginx 默认配置**来启动服务。
 
 你可以暂时不用关心 nginx 默认配置是什么，或者有什么用~ 这会在后续教程中进行讲解😜~
 
@@ -122,7 +126,7 @@ server {
 }
 ```
 
-在上述配置文件中，`#`后的内容表示注释内容，同时我们还可以看到`location`关键字以及它对应的匹配规则。
+在上述配置文件中，`#`后的内容表示注释内容，同时我们还可以看到`location`关键字以及它对应的匹配规则，这将是本篇教程的核心配置项😛~
 
 至于其他配置项比如`listen`、`server_name`、`error_page`等，我们可以暂时不用关注😛~
 
@@ -162,7 +166,7 @@ server {
 
 在上述配置文件中，定义了两个核心匹配规则：
 - `location /index`：匹配以 /index 开头的请求
-- `location ~ /hello/(?<name>\w+)`：匹配以 /hello/xxx 类型的请求，并使用正则表达式捕获 URL 中的 {name} 参数。
+- `location ~ /hello/(?<name>\w+)`：匹配以 /hello/xxx 类型的请求，并使用正则表达式捕获 URL 中的 name 参数。
 
 ---
 
@@ -193,7 +197,7 @@ $ docker run -it --rm -p 80:80 \
 
 ### 3. 验证服务
 
-通过浏览器访问 `http://localhost/index`，如果可以看到 **Welcome to ngixn** 页面，那就说明 `location /index` 规则已经生效。
+通过浏览器访问 `http://localhost/index`，如果可以看到 **Welcome to Orange** 页面，那就说明 `/index` 规则已经生效。
 
 <BrowserWindow url="http://localhost/index">
 
@@ -201,7 +205,7 @@ $ docker run -it --rm -p 80:80 \
 
 </BrowserWindow>
 
-通过浏览器访问 `http://localhost/hello/orange-ang`，如果可以看到 **hello orange-ang** 页面，那就说明 `location ~ /hello/(?<name>\w+)` 规则已经生效。
+通过浏览器访问 `http://localhost/hello/orange-ang`，如果可以看到 **hello orange-ang** 页面，那就说明 `/hello/(?<name>\w+)` 规则已经生效。
 
 <BrowserWindow url="http://localhost/hello/orange-ang">
 
