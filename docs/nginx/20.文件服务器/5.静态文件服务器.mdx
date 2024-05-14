@@ -13,7 +13,9 @@ import TabItem from '@theme/TabItem';
 
 <!--package-->
 
-Nginx 搭建静态文件服务器，需要指定一个目录作为静态文件存储路径配置。我们假设有以下目录结构：
+Nginx 搭建静态文件服务器，通常使用`root`或者`alias`指令。
+
+此外还需要指定一个目录作为静态文件存储路径配置。我们先假设有以下目录结构：
 
 ```text
 /static
@@ -27,13 +29,21 @@ Nginx 搭建静态文件服务器，需要指定一个目录作为静态文件�
   └── index.html
 ```
 
-在这个目录结构中，我们可以看到根目录`/static`下面存放了`html`、`js`、`css`等文件。为了更好的理解，我们假设每个文件的内容就是文件自身的详细路径~
+在这个目录结构中，我们可以看到根目录`/static`下面存放了`html`、`js`、`css`等文件。为了后续方便理解，我们假设每个文件的内容就是文件自身的详细路径~（即文件`custom.css`内容为`/static/css/custom.css`）
 
 这样我们就可以开始准备 nginx 配置文件了。
 
 ## root
 
-在 nginx 中，`root`关键字可以指定一个目录作为静态文件存储路径配置。当请求命中路由规则时，会将**路径拼接在`root`路径之后去查找文件！**
+在 nginx 中，`root`关键字可以指定一个目录作为静态文件存储路径配置。
+
+当请求命中路由规则时，会将**路径拼接在`root`路径之后去查找文件！**
+
+其语法结构为：
+
+```text
+root   dir;
+```
 
 为了更好的理解`root`的作用，我们假设定义了如下的路由规则：
 
@@ -43,7 +53,9 @@ location / {
 }
 ```
 
-当请求路径为`/static/css/custom.css`时，我们会发现 nginx 查找文件的路径为`/static/static/css/custom.css`！因此无法找到对应的文件。
+当请求路径为`/static/css/custom.css`时，我们会发现 nginx 查找文件的路径为`/static/static/css/custom.css`！
+
+因此该请求无法找到对应的文件！
 
 所以我们需要调整请求路径为`/css/custom.css`，这时 nginx 就可以正确命中`/static/css/custom.css`文件。
 
@@ -51,222 +63,194 @@ location / {
 
 ### 1. 准备配置文件
 
-```yaml title="/workspace/root.conf"
+```yaml title="/conf/root.conf"
 server {
     listen       80;
     server_name  _;
 
     # 静态文件服务器
-    location / {
+    location /static {
         # 指定根目录
-        root   /static;
+        root   /;
         # 指定默认返回的文件
         index  index.html;
     }
     # 文件不存在
-    error_page  404  /notfound.html;
+    error_page  404  /static/notfound.html;
 }
 ```
 
-在上述配置中，我们可以看到定义了一个`location /`，表示所有的请求都会命中此规则。并且指定了根目录为`/static`，这样我们就可以将此目录映射到静态文件服务器中了。
+在上述配置中，我们定义了一个`location /static`规则，它表示所有以`/static`开头的请求都会命中此规则。并且规则中指定了根目录为`/`，这样我们就可以将此目录映射到静态文件服务器中了。
 
 :::note 补充
-error_page 可以检测请求响应的错误码，从而实现内部转发能力。
+error_page 可以检测响应的错误码，从而实现内部转发能力。
 :::
 
 ### 2. 启动服务
 
 ```bash
 $ docker run -it --rm -p 80:80 \
-    -v /workspace/root.conf:/etc/nginx/conf.d/default.conf \
+    -v /conf/root.conf:/etc/nginx/conf.d/default.conf \
     -v /static:/static \
     nginx
 ```
 
-### 3. 功能验证
+### 3. 验证功能
 
-通过浏览器访问`http://localhost`，如果可以看到`index.html`页面，那就说明规则已经生效。
+通过浏览器访问`http://localhost/static/` ，如果可以看到`index.html`页面，那就说明规则已经生效。
 
-<BrowserWindow url="http://localhost/">
+<BrowserWindow url="http://localhost/static/">
 
 /static/index.html
 
 </BrowserWindow>
 
-通过浏览器访问`http://localhost/css/custom.css`，如果可以看到`custom.css`页面，那就说明规则已经生效。
+通过浏览器访问`http://localhost/static/css/custom.css` ，如果可以看到`custom.css`页面，那就说明规则已经生效。
 
-<BrowserWindow url="http://localhost/css/custom.css">
+<BrowserWindow url="http://localhost/static/css/custom.css">
 
 /static/css/custom.css
 
 </BrowserWindow>
 
-通过浏览器访问`http://localhost/123`，这是一个不存在的页面，这时我们如果可以看到`notfound.html`页面，那就说明规则`error_page`已经生效。
+通过浏览器访问`http://localhost/static/123` ，这是一个不存在的页面，这时我们如果可以看到`notfound.html`页面，那就说明规则`error_page`已经生效。
 
-<BrowserWindow url="http://localhost/123">
+<BrowserWindow url="http://localhost/static/123">
 
 /static/notfound.html
 
 </BrowserWindow>
 
+此时`notfound.html`页面的查找逻辑为：
+
+- 请求`/static/123`返回`404`不存在
+- 规则`error_page`探测到`404`从而转发到`/static/notfound.html`
+- 请求`/static/notfound.html`并返回页面
+
+此时用户看到的就是`notfound.html`页面，且状态码仍旧是`404`~~
+
+
+
+
+
+
+
+
+
 
 ## alias
 
-在 nginx 中，`alias`和`root`一样可以指定服务器上静态文件的根目录。但他们之间有一些细微的差别，前者**不会拼接请求路径**，而后者会**拼接请求路径**！
+在 nginx 中，`alias`和`root`一样可以指定服务器上静态文件的根目录。
 
-同样为了更好的理解`alias`的作用，我们假设定义了如下的路由规则：
+但他们之间有一些细微的差别，前者**不会拼接请求路径**，而后者会**拼接请求路径**！
+
+其语法结构同样为：
+
+```text
+alias   dir;
+```
+
+为了更好的理解`alias`的作用，我们假设有如下的路由规则：
 
 ```yaml
 location / {
-    root   /static;
+    alias   /static;
 }
 ```
 
-当请求路径为`/static/css/custom.css`时，我们会发现 nginx 查找文件的路径为`/static/css/custom.css`！这正好可以找到目标文件！
+当请求路径为`/static/css/custom.css`时，我们会发现 nginx 查找文件的路径为`/static/css/custom.css`！
+
+这正好可以找到目标文件！
+
+而同样的请求在`root`指令下则会命中`/static/static/css/custom.css`!
 
 大致了解`alias`和`root`区别之后，我们可以开始准备 nginx 配置文件。
 
 ### 1. 准备配置文件
 
-```yaml title="/workspace/alias.conf"
+```yaml title="/conf/alias.conf"
 server {
     listen       80;
     server_name  _;
 
     # 静态文件服务器
-    location / {
+    location /static {
         # 指定根目录
-        root   /static;
+        alias   /static;
         # 指定默认返回的文件
         index  index.html;
     }
     # 文件不存在
-    error_page  404  /notfound.html;
+    error_page  404  /static/notfound.html;
 }
 ```
 
-在上述配置中，我们可以看到定义了一个`location /`，表示所有的请求都会命中此规则。并且指定了根目录为`/static`，这样我们就可以将此目录映射到静态文件服务器中了。
+在上述配置中，我们定义了一个`location /static`规则，它表示所有以`/static`开头的请求都会命中此规则。并且规则中指定了根目录为`/static`，这样我们就可以将此目录映射到静态文件服务器中了。
 
 ### 2. 启动服务
 
 ```bash
 $ docker run -it --rm -p 80:80 \
-    -v /workspace/alias.conf:/etc/nginx/conf.d/default.conf \
+    -v /conf/alias.conf:/etc/nginx/conf.d/default.conf \
     -v /static:/static \
     nginx
 ```
 
-### 3. 功能验证
+### 3. 验证功能
 
-通过浏览器访问`http://localhost/`，如果可以看到`index.html`页面，那就说明规则已经生效。
+通过浏览器访问`http://localhost/static/` ，如果可以看到`index.html`页面，那就说明规则已经生效。
 
-<BrowserWindow url="http://localhost/">
+<BrowserWindow url="http://localhost/static/">
 
     /static/index.html
 
 </BrowserWindow>
 
+通过浏览器访问`http://localhost/static/css/custom.css` ，如果可以看到`custom.css`页面，那就说明规则已经生效。
 
-## try_files
+<BrowserWindow url="http://localhost/static/css/custom.css">
 
-在 Nginx 中，`try_files`指令**用于尝试访问多个文件**，并根据访问结果返回对应的数据。
-
-其语法结构为：
-
-```text
-try_files file1 [file2 ...] fallback;
-```
-
-其中我们可以看到`try_files`至少包含两个参数：
-
-- `file1 [file2 ...]`：文件参数，表示待查找的的文件。
-- `fallback`：默认参数，表示如果文件都无法找到，则使用此默认处理方式。
-
-因此`try_files`可以单独生效，也可以结合`root`、`alias`一起使用。
-
-现在让我们通过一个简单的示例来快速熟悉下`try_files`的使用。
-
-### 1. 准备目录
-
-我们假设有以下目录结构：
-
-```text
-/static2
-  └── html
-      └── index.html
-```
-
-### 2. 准备配置文件
-
-并准备以下配置文件
-
-```yaml title="/workspace/try_files.conf"
-server {
-    listen 80;
-    server_name example.com;
-
-    location / {
-        root /static2;
-        try_files $uri $uri/ =404;
-    }
-}
-```
-
-在上述配置中，我们可以看到`try_files`将依次查找：
-
-- `$uri`：表示**文件路径**，指向某一个文件。
-- `$uri/`：表示**目录路径**，指向某一个目录。
-- `=404`：表示默认执行策略。当前两个都不存在时，则返回404错误。
-
-### 3. 启动服务
-
-```bash
-$ docker run -it --rm -p 80:80 \
-    -v /workspace/try_files.conf:/etc/nginx/conf.d/default.conf \
-    -v /static2:/static2 \
-    nginx
-```
-
-### 4. 功能验证
-
-通过浏览器访问`http://localhost/html/`，如果可以看到`index.html`页面，那就说明规则已经生效。
-
-<BrowserWindow url="http://localhost/html/">
-
-    /static2/static2/index.html
+    /static/css/custom.css
 
 </BrowserWindow>
 
-我们可以简单分析下这个请求经历了什么：
+:::tip 提示
 
-1. 首先请求尝试查找`$uri`。这里一个文件路径，但`/static2/html`是一个目录，因此不匹配。
-2. 然后请求尝试查找`$uri/`。这里一个目录路径，而`/static2/html/`确实是一个目录，因此尝试查找`index.html`文件。
+细心的同学可能已经发现`root`和`alias`示例中只有**根目录配置**不同~😁😁😁
+
+:::
+
+
+
+
 
 
 ## autoindex
 
 在 Nginx 中，`autoindex`指令用于启动或禁止目录列表功能。
 
-也就是，当我们启动了`autoindex`之后，我们就可以拥有一个在线文件浏览功能。这在调试和开发过程中非常有用，也可以用于提供文件下载服务。
+也就是说，当我们启动了`autoindex`之后，我们就可以拥有一个在线文件浏览功能。这在调试和开发过程中非常有用，也可以用于提供文件下载服务。
 
 通常来讲，`autoindex`指令可以在 `http`、`server`、`location` 块中使用。其语法结构为：
 
 ```text
-autoindex on | off;
+autoindex   on | off;
 ```
 
-下面通过一个简单的示例来快速熟悉`autoindex`的使用~
+下面我们通过一个简单的示例来快速熟悉`autoindex`功能~
 
-### 1.配置准备
+### 1.准备配置文件
 
-```yaml title="/workplace/autoindex.conf"
+```yaml title="/conf/autoindex.conf"
 server {
     listen 80;
     server_name _;
 
     location / {
-        root /workplace/static;
+        root      /static/;
         autoindex on;
+        # 不指定默认返回文件
+        index     _;
     }
 }
 ```
@@ -277,24 +261,34 @@ server {
 
 ```bash
 $ docker run -it --rm -p 80:80 \
-    -v /workspace/autoindex.conf:/etc/nginx/conf.d/default.conf \
-    -v /static:/workplace/static \
+    -v /conf/autoindex.conf:/etc/nginx/conf.d/default.conf \
+    -v /static:/static \
     nginx
 ```
 
-这个用例汇总，我们复用了`/static`目录。
+### 3.验证功能
 
-### 3.功能验证
+通过浏览器访问`http://localhost/` ，如果可以看到如下类似的列表页面，那就说明规则已经生效。
 
-通过浏览器访问`http://localhost/`，如果可以看到文件目录列表页面，那就说明规则已经生效。
+<BrowserWindow url="http://localhost/">
 
-<BrowserWindow url="http://localhost/html/">
+<h4>Index of /</h4>
 
-    Index of /images/
-    Name         Last modified     Size
-    ---------------------------------------
-    Parent Directory    -
-    banner.jpg   14-May-2024 10:10   4.5K
-    logo.png     14-May-2024 10:10   2.3K
+<pre>
+<a href="#">../</a>
+<a href="#">css/</a>                             14-May-2024 07:46                   -
+<a href="#">js/</a>                              14-May-2024 07:46                   -
+<a href="#">index.html</a>                       14-May-2024 07:47                  18
+<a href="#">notfound.html</a>                    14-May-2024 07:47                  21
+<a href="#">unknown.html</a>                     14-May-2024 07:46                  20
+</pre>
 
 </BrowserWindow>
+
+<br/>
+
+:::info 👇👇👇
+**本文作者:** 橙子昂 <br/>
+**版权声明:** 转载请注明出处哦~👮‍👮‍👮‍
+:::
+

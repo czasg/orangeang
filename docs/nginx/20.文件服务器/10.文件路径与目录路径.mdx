@@ -1,0 +1,97 @@
+---
+title: 文件路径与目录路径
+hide_title: false
+hide_table_of_contents: false
+slug: /file-server/file-dir-path
+---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import EmptyLine from '@site/src/components/EmptyLine';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<!--package-->
+
+在 Nginx 静态文件服务中，我们通过后缀是否带有`/`来区别文件与目录。也就是：
+
+- `/file`：不带有后缀`/`的是一个文件路径
+- `/file/`：而带有后缀`/`的则是一个目录路径
+
+
+
+## try_files
+
+在 Nginx 中，`try_files`指令**用于尝试访问多个文件**，并根据访问结果返回对应的数据。
+
+其语法结构为：
+
+```text
+try_files file1 [file2 ...] fallback;
+```
+
+其中我们可以看到`try_files`至少包含两个参数：
+
+- `file1 [file2 ...]`：文件参数，表示待查找的的文件。
+- `fallback`：默认参数，表示如果文件都无法找到，则使用此默认处理方式。
+
+因此`try_files`可以单独生效，也可以结合`root`、`alias`一起使用。
+
+现在让我们通过一个简单的示例来快速熟悉下`try_files`的使用。
+
+### 1. 准备目录
+
+我们假设有以下目录结构：
+
+```text
+/static2
+  └── html
+      └── index.html
+```
+
+### 2. 准备配置文件
+
+并准备以下配置文件
+
+```yaml title="/workspace/try_files.conf"
+server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        root /static2;
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+在上述配置中，我们可以看到`try_files`将依次查找：
+
+- `$uri`：表示**文件路径**，指向某一个文件。
+- `$uri/`：表示**目录路径**，指向某一个目录。
+- `=404`：表示默认执行策略。当前两个都不存在时，则返回404错误。
+
+### 3. 启动服务
+
+```bash
+$ docker run -it --rm -p 80:80 \
+    -v /workspace/try_files.conf:/etc/nginx/conf.d/default.conf \
+    -v /static2:/static2 \
+    nginx
+```
+
+### 4. 功能验证
+
+通过浏览器访问`http://localhost/html/`，如果可以看到`index.html`页面，那就说明规则已经生效。
+
+<BrowserWindow url="http://localhost/html/">
+
+    /static2/static2/index.html
+
+</BrowserWindow>
+
+我们可以简单分析下这个请求经历了什么：
+
+1. 首先请求尝试查找`$uri`。这里一个文件路径，但`/static2/html`是一个目录，因此不匹配。
+2. 然后请求尝试查找`$uri/`。这里一个目录路径，而`/static2/html/`确实是一个目录，因此尝试查找`index.html`文件。
+
