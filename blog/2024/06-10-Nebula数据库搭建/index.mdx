@@ -1,0 +1,227 @@
+---
+title: Nebula数据库搭建
+authors: [czasg]
+tags: [nebula, 图数据库]
+slug: Nebula数据库搭建
+---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+
+<!--package-->
+
+本文记录 Nebula 图数据的搭建过程。 <br/>
+文档参考：
+- [准备资源 - NebulaGraph Database 手册](https://docs.nebula-graph.com.cn/3.8.0/4.deployment-and-installation/1.resource-preparations/)
+- [本地安装 - NebulaGraph Database 手册](https://docs.nebula-graph.com.cn/3.8.0/4.deployment-and-installation/2.compile-and-install-nebula-graph/2.install-nebula-graph-by-rpm-or-deb/)
+
+<!--truncate-->
+
+## 架构简介
+Nebula 采用计算存储分离架构，共包含三大组件：
+- Graphd：负责处理计算请求
+- Metad：负责数据管理、集群管理和用户权限管理等
+- Storaged：服务负责存储数据
+下图展示了 NebulaGraph 集群的经典架构：
+
+<FullScreenImage src={require("./nebula.png").default} />
+
+关于 Nabula 架构本文不做过多介绍，详情请见：[NebulaGraph Database](https://docs.nebula-graph.com.cn/3.8.0/)
+
+## 单节点部署
+
+### 1.服务安装
+可以通过官方 RPM 包安装 NebulaGraph，本次安装版本3.8.0。
+默认安装路径为 `/usr/local/nebula/`。
+```bash
+wget https://oss-cdn.nebula-graph.com.cn/package/3.8.0/nebula-graph-3.8.0.el7.x86_64.rpm
+rpm -ivh nebula-graph-3.8.0.el7.x86_64.rpm
+```
+
+### 2.配置初始化
+Nebula 提供了默认 .default 和生产 .production 两种配置。
+我们采用 production 配置，并在此基础上做一定的调整：
+#### 2.1.Meta服务配置
+配置文件路径：/usr/local/nebula/etc/nebula-metad.conf
+配置调整项：
+```
+--timezone_name=UTC+08:00
+--log_dir=/workspace/logs/nebula
+--timestamp_in_logfile_name=true
+--max_log_size=1024
+--data_path=/workspace/data/nebula/meta
+```
+
+#### 2.2.Graph服务配置
+配置文件路径：/usr/local/nebula/etc/nebula-graphd.conf
+配置调整项：
+```
+--timezone_name=UTC+08:00
+--log_dir=/workspace/logs/nebula
+--timestamp_in_logfile_name=true
+--max_log_size=1024
+--enable_authorize=true
+--enable_space_level_metrics=true
+--max_sessions_per_ip_per_user=500
+```
+
+#### 2.3.Storage服务配置
+配置文件路径：/usr/local/nebula/etc/nebula-storage.conf
+配置调整项：
+```
+--timezone_name=UTC+08:00
+--log_dir=/workspace/logs/nebula
+--timestamp_in_logfile_name=true
+--max_log_size=1024
+--data_path=/workspace/data/nebula/storage
+```
+
+### 5.2.服务启动
+Nebula 涉及三个服务组件（graphd、metad、storaged），其中 metad 异常时数据库仍旧可以提供正常读，其余组件异常则整体服务异常。综合考虑，采用 Supervisor 部署 Nebula 相关服务。
+
+```bash title="nebula-supervisor.ini"
+[program:nebula-supervisor]
+command=/usr/local/nebula/scripts/nebula-supervisor.sh
+directory=/workspace/app/nebula
+user=root
+autostart=true
+autorestart=true
+startsecs=2
+startretries=2
+stopsignal=TERM
+stopwaitsecs=10
+stopasgroup=true
+stdout_logfile=/workspace/logs/nebula/nebula-supervisor.log
+stderr_logfile=/workspace/logs/nebula/nebula-supervisor.err
+stdout_logfile_maxbytes=50MB
+stdout_logfile_backups=10
+```
+
+```bash title="nebula-supervisor.sh"
+#!/bin/bash
+
+# nebula 启动入口
+function start_nebula() {
+/usr/local/nebula/scripts/nebula.service start $1
+if [ $? -eq 0 ]; then
+echo "$(date): $1 服务启动成功。"
+else
+echo "$(date): $1 服务启动失败。"
+fi
+}
+
+# 定义服务
+items=("metad" "graphd" "storaged")
+
+while true; do  # 无限循环
+for item in "${items[@]}"; do  # 遍历列表中的每个元素
+if ! pgrep -x "nebula-$item" > /dev/null  # 检查进程是否存在
+then
+echo "$(date): nebula-$item 进程不存在，正在启动服务..."
+start_nebula $item
+else
+echo "$(date): nebula-$item 进程正在运行。"
+fi
+done
+sleep 60  # 暂停60秒
+done
+```
+更新下 supervisor 管理进程：
+```bash
+supervisorctl reread
+supervisorctl update
+```
+此时，我们可以看到已经跑起来了三个进程：
+```bash
+$ ps -ef | grep nebula
+root     22026     1  0 12:31 ?        00:00:07 /usr/local/nebula/bin/nebula-metad --flagfile /usr/local/nebula/etc/nebula-metad.conf
+root     28838     1  0 May31 ?        00:00:31 /usr/local/nebula/bin/nebula-graphd --flagfile /usr/local/nebula/etc/nebula-graphd.conf
+root     28926     1  0 May31 ?        00:02:06 /usr/local/nebula/bin/nebula-storaged --flagfile /usr/local/nebula/etc/nebula-storaged.conf
+```
+### 5.3.日志初始化
+日志暂时不用收集，但仍然建议定期清除。
+计划每天凌晨 3 点自动删除更新时间超过 7 天的 Graph 服务运行日志文件。
+Crontab 指令参考如下：
+```
+0 3 * * * find /workspace/logs/nebula -name nebula-graphd.* -mtime +7 -delete
+```
+5.4.用户初始化
+```
+CREATE USER develop WITH PASSWORD 'develop';
+GRANT ROLE USER ON develop TO develop;
+```
+
+5.5.注册服务
+Nebula 服务启动后不会自动执行注册，而需要用户手动注册 Storage 服务。
+建议使用 docker 在本地搭建一个 studio 服务，docker 指令参考如下：
+```
+docker run -it --rm -p 7001:7001 -e USER=root vesoft/nebula-graph-studio:v3.10
+```
+在 studio / console 中，我们可以通过以下指令添加 Storage 主机
+```
+ADD HOST 127.0.0.1:9779
+```
+至此，服务部署完成。
+## 6.服务监控
+Nebula 社区提供了一款用于监控 NebulaGraph 集群中机器和服务状态的可视化工具 Dashboard 。
+目前作为单节点服务，建议仅监控机器本身状态。
+因此建议监控方案：Node Exporter
+
+## 7.数据备份
+Nebula 提供了两种备份方案：
+- BR + Agent：社区提供的全量备份工具
+- SNAPSHOT：Nebula 自带的快照指令
+通过初步调研发现二者存在一定区别。
+社区工具BR支持全量备份以及一键恢复。而SNAPSHOT仅支持单个空间下的数据快照，并且恢复时需要手动拷贝文件到指定目录，存在一定的操作风险。
+因此此处部署采用社区备份工具实施数据备份，备份流程为：
+1. 执行备份指令
+2. 备份文件压缩
+3. 上传备份数据至云端
+备份脚本名参考：
+```bash title="nebula-backup.sh"
+#!/bin/bash
+
+# 获取当前日期
+today=$(date +"%Y_%m_%d")
+
+# 运行备份命令
+/usr/local/nebula/bin/br backup full --meta "127.0.0.1:9559" --storage "local:///usr/local/nebula/backup/"
+
+# 找到今天生成的最新备份目录
+backup_dir=$(find /usr/local/nebula/backup/ -type d -name "BACKUP_${today}_*" | sort | tail -n 1)
+
+# 检查是否找到备份目录
+if [ -z "$backup_dir" ]; then
+echo "未找到今天生成的备份目录。"
+exit 1
+fi
+
+# 生成压缩文件的名称
+backup_name=$(basename $backup_dir)
+tar_file="${backup_name}.tar.gz"
+
+# 使用 tar 压缩备份目录
+tar -czvf /usr/local/nebula/backup/$tar_file -C $(dirname $backup_dir) $backup_name > /dev/null 2>&1
+
+# 检查是否成功生成压缩文件
+if [ -f "/usr/local/nebula/backup/$tar_file" ]; then
+echo "成功压缩目录 ${backup_dir} 为文件 /usr/local/nebula/backup/${tar_file}。"
+else
+echo "压缩失败。"
+exit 1
+fi
+```
+
+## 8.集群拓展
+Nebula 集群改造期间需要停服，服务需要中断。
+集群搭建可以通过修改配置完成，暂不关注。
+而整个扩展的核心在于 storage 组件的数据负载是否均衡。
+目前 Nubula 支持使用命令SUBMIT JOB BALANCE LEADER均衡分布所有图空间中的 Leader 分片副本。但集群场景下效果如何，待验证。
+
+
+
+<br/>
+
+:::info 👇👇👇
+**本文作者:** 橙子昂<br/>
+**版权声明:** 转载请注明出处哦~👮‍👮‍👮‍
+:::
