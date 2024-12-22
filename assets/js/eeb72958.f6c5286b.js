@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkorange_ang=self.webpackChunkorange_ang||[]).push([[1616],{5304:a=>{a.exports=JSON.parse('{"label":"\u64b0\u5199\u4e2d","permalink":"/orange-ang/blog/tags/\u64b0\u5199\u4e2d","allTagsPath":"/orange-ang/blog/tags","count":4,"unlisted":false}')}}]);
