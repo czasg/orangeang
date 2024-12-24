@@ -1,0 +1,80 @@
+---
+title: 磁盘问题排查
+authors: [czasg]
+tags: [撰写中,待分类]
+slug: 磁盘问题排查
+---
+
+import FullScreenImage from '@site/src/components/FullScreenImage';
+
+<!--package-->
+
+我们与其他团队交接了一个服务，结果发现该服务所在的服务器每天凌晨 3 点到 4 点之间，磁盘空间会突然被占满，随后又自动恢复。
+
+初步判断，这可能是由于某个定时任务在执行过程中生成了大量临时文件，任务完成后又自动删除了这些文件。
+
+然而，令人困惑的是，代码中并没有设置凌晨 3 点到 4 点的定时任务，服务器上的 crontab 也没有相关记录...
+
+<!--truncate-->
+
+经过初步排查，我们确认问题出在服务中的某个“幽灵”程序，该程序会在凌晨异常执行，导致磁盘空间被占满。初步推测，该程序可能向 `/tmp` 或 `/var` 目录写入了大量数据。
+
+为了进一步排查问题，我们编写了一个磁盘检查脚本，当磁盘利用率超过 70% 时自动触发，并生成详细的日志文件，帮助定位问题。脚本的整体逻辑如下：
+
+1. **触发条件**：当磁盘利用率超过 70% 时自动启动。
+2. **日志生成**：生成包含当前磁盘利用率的日志文件。
+3. **系统状态记录**：将 `top` 命令的输出写入日志文件，记录系统进程状态。
+4. **大文件检查**：
+   - 扫描 `/tmp` 目录，将大于 10 MB 的文件信息写入日志。
+   - 扫描 `/var` 目录，将大于 10 MB 的文件信息写入日志。
+
+
+```bash
+#!/bin/bash
+
+# 定义日志文件路径
+LOG_DIR="/home/work/log/disk-monitor"
+
+# 获取当前时间
+current_time=$(date +"%Y-%m-%d_%H-%M-%S")
+
+# 获取根目录的磁盘使用率
+disk_usage=$(df -h / | grep -v Filesystem | awk '{print $5}' | sed 's/%//')
+
+# 检查磁盘使用率是否超过 70%
+if [ "$disk_usage" -gt 70 ]; then
+    # 定义日志文件名，包含磁盘使用率信息
+    LOG_FILE="$LOG_DIR/disk_usage_${disk_usage}.log"
+
+    # 捕获 top 进程数据
+    top_output=$(top -b -n 1 | head -n 50)
+
+    # 获取 /tmp 目录下的文件信息
+    tmp_files=$(find /tmp -type f -size +10M -exec du -h {} + | sort -rh)
+
+    # 获取 /var/log 目录下的文件信息
+    var_log_files=$(find /var -type f -size +10M -exec du -h {} + | sort -rh)
+
+    # 将数据写入日志文件
+    echo "[$current_time] Disk usage on / is $disk_usage%. Top Process Data:" >> "$LOG_FILE"
+    echo "$top_output" >> "$LOG_FILE"
+    echo "----------------------------------------" >> "$LOG_FILE"
+    echo "[$current_time] Files in /tmp:" >> "$LOG_FILE"
+    echo "$tmp_files" >> "$LOG_FILE"
+    echo "----------------------------------------" >> "$LOG_FILE"
+    echo "[$current_time] Files in /var/log:" >> "$LOG_FILE"
+    echo "$var_log_files" >> "$LOG_FILE"
+    echo "----------------------------------------" >> "$LOG_FILE"
+    echo "" >> "$LOG_FILE"
+    echo "" >> "$LOG_FILE"
+fi
+```
+
+未完待续...
+
+<br/>
+
+:::info 👇👇👇
+**本文作者:** 橙子昂 <br/>  
+**版权声明:** 转载请注明出处哦~👮‍👮‍👮‍
+:::
